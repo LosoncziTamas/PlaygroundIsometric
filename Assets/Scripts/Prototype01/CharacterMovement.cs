@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
@@ -21,23 +19,39 @@ namespace Prototype01
             _camera = Camera.main;
         }
 
+        private Vector3Int _tile;
+        
         private void Start()
         {
             _mouseInput.Mouse.MouseClick.performed += OnMouseClick;
             var tiles = _tilemap.GetTilesBlock(_tilemap.cellBounds);
-            var count = tiles.Length;
-            var first = tiles.First(t => t != null);
+            
+            foreach (var position in _tilemap.cellBounds.allPositionsWithin) 
+            {
+                if (_tilemap.HasTile(position))
+                {
+                    _tile = position;
+                    Debug.Log("default pos" + position);
+                    return;
+                }
+            }
         }
-
+        
         private void OnMouseClick(InputAction.CallbackContext obj)
         {
             var mousePos = _mouseInput.Mouse.MousePosition.ReadValue<Vector2>();
-            var worldPoint =  _camera.ScreenToWorldPoint(mousePos);
-            var cellPos = _tilemap.WorldToCell(worldPoint);
-            cellPos = new Vector3Int(cellPos.x, cellPos.y, 0);
-            if (_tilemap.HasTile(cellPos))
+            RaycastHit hit;
+            Ray ray = _camera.ScreenPointToRay(mousePos);
+        
+            if (Physics.Raycast(ray, out hit)) 
             {
-                _destination = mousePos;
+                Transform objectHit = hit.transform;
+                Debug.Log(objectHit.name);
+            }
+            
+            if (_tilemap.HasTile(_tile))
+            {
+                _destination = _tilemap.CellToWorld(_tile);
             }
         }
 
