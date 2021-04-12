@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
@@ -18,41 +19,40 @@ namespace Prototype01
             _mouseInput = new MouseInput();
             _camera = Camera.main;
         }
-
-        private Vector3Int _tile;
         
         private void Start()
         {
             _mouseInput.Mouse.MouseClick.performed += OnMouseClick;
-            var tiles = _tilemap.GetTilesBlock(_tilemap.cellBounds);
-            
-            foreach (var position in _tilemap.cellBounds.allPositionsWithin) 
-            {
-                if (_tilemap.HasTile(position))
-                {
-                    _tile = position;
-                    Debug.Log("default pos" + position);
-                    return;
-                }
-            }
+        }
+        
+        private void OnEnable()
+        {
+            _mouseInput.Enable();
         }
         
         private void OnMouseClick(InputAction.CallbackContext obj)
         {
             var mousePos = _mouseInput.Mouse.MousePosition.ReadValue<Vector2>();
-            RaycastHit hit;
-            Ray ray = _camera.ScreenPointToRay(mousePos);
-        
-            if (Physics.Raycast(ray, out hit)) 
+            var tile = GetTileFromMousePos(mousePos);
+            if (tile.HasValue)
             {
-                Transform objectHit = hit.transform;
-                Debug.Log(objectHit.name);
+                _destination = _tilemap.CellToWorld(tile.Value);
             }
+        }
+
+        private Vector3Int? GetTileFromMousePos(Vector2 mousePos)
+        {
+            var screenPos = _camera.ScreenToWorldPoint(mousePos);
+            screenPos.z = 0;
+
+            var tile = _tilemap.WorldToCell(screenPos);
             
-            if (_tilemap.HasTile(_tile))
+            if (_tilemap.HasTile(tile))
             {
-                _destination = _tilemap.CellToWorld(_tile);
+                return tile;
             }
+
+            return null;
         }
 
         private void FixedUpdate()
@@ -68,14 +68,33 @@ namespace Prototype01
             }
         }
 
-        private void OnEnable()
+        private Vector2 _lastMousePos = Vector3.zero;
+
+        private void Update()
         {
-            _mouseInput.Enable();
+            var currMousePos = _mouseInput.Mouse.MousePosition.ReadValue<Vector2>();
+            
+            if (Vector2.Distance(currMousePos, _lastMousePos) > 0.01f)
+            {
+                var tile = GetTileFromMousePos(currMousePos);
+                if (tile.HasValue)
+                {
+                    var tileHovered = _tilemap.GetTile(tile.Value);
+                    // TODO: hovering
+                }
+            }
+
+            _lastMousePos = currMousePos;
         }
 
         private void OnDisable()
         {
             _mouseInput.Disable();
+        }
+
+        private void OnDestroy()
+        {
+            _mouseInput.Mouse.MouseClick.performed -= OnMouseClick;
         }
     }
 }
