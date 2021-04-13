@@ -79,7 +79,9 @@ namespace Prototype01
                 var tile = GetTileFromMousePos(currMousePos);
                 if (tile.HasValue)
                 {
-                    var tileHovered = _tilemap.GetTile(tile.Value);
+                    var hoveredTile = _tilemap.GetTile(tile.Value);
+                    var tileType = hoveredTile.GetType();
+                    Debug.Log(tileType);
                     // TODO: hovering
                 }
             }
