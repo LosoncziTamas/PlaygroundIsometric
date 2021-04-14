@@ -80,9 +80,10 @@ namespace Prototype01
                 if (tile.HasValue)
                 {
                     var hoveredTile = _tilemap.GetTile(tile.Value);
-                    var tileType = hoveredTile.GetType();
-                    Debug.Log(tileType);
-                    // TODO: hovering
+                    if (hoveredTile is ClickableTile clickableTile)
+                    {
+                        clickableTile.Highlight();
+                    }
                 }
             }
 
