@@ -6,7 +6,6 @@ namespace Prototype01
 {
     public class ClickableTile : Tile
     {
-
         private ClickableTileBehaviour _behaviour;
         
 #if UNITY_EDITOR

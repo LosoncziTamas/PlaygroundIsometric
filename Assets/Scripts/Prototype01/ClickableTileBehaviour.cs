@@ -16,6 +16,7 @@ namespace Prototype01
 
         public void HighLight(ClickableTile tile)
         {
+            tile.color = highlightColor;
             Debug.Log("[ClickableTileBehaviour] HighLight");
             _spriteRenderer.color = highlightColor;
         }

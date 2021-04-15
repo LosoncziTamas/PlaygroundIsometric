@@ -83,6 +83,7 @@ namespace Prototype01
                     if (hoveredTile is ClickableTile clickableTile)
                     {
                         clickableTile.Highlight();
+                        Debug.Log(tile.Value);
                     }
                 }
             }
