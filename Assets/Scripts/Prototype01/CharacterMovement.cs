@@ -9,6 +9,7 @@ namespace Prototype01
     {
         [SerializeField] private Tilemap _tilemap;
         [SerializeField] private float _speed = 2.0f;
+        [SerializeField] private GridInformation _info;
         
         private MouseInput _mouseInput;
         private Camera _camera;
@@ -79,12 +80,9 @@ namespace Prototype01
                 var tile = GetTileFromMousePos(currMousePos);
                 if (tile.HasValue)
                 {
+                    _info.SetPositionProperty(tile.Value, "name", Color.cyan);
                     var hoveredTile = _tilemap.GetTile(tile.Value);
-                    if (hoveredTile is ClickableTile clickableTile)
-                    {
-                        clickableTile.Highlight();
-                        Debug.Log(tile.Value);
-                    }
+                    _tilemap.SetTile(tile.Value, null);
                 }
             }
 

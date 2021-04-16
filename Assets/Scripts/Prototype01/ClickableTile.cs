@@ -22,22 +22,17 @@ namespace Prototype01
             AssetDatabase.CreateAsset(CreateInstance<ClickableTile>(), path);
         }
 #endif
-
-        public void Highlight()
-        {
-            _behaviour.HighLight(this);
-        }
         
         public override void RefreshTile(Vector3Int position, ITilemap tilemap)
         {
-            base.RefreshTile(position, tilemap);
             Debug.Log("ClickableTile RefreshTile");
+            base.RefreshTile(position, tilemap);
         }
 
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData)
         {
-            base.GetTileData(position, tilemap, ref tileData);
             Debug.Log($"ClickableTile GetTileData {position} tilemap {tilemap} tileData {tileData}");
+            base.GetTileData(position, tilemap, ref tileData);
         }
 
         public override bool GetTileAnimationData(Vector3Int position, ITilemap tilemap, ref TileAnimationData tileAnimationData)
