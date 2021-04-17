@@ -10,10 +10,12 @@ namespace Prototype01
         [SerializeField] private Tilemap _tilemap;
         [SerializeField] private float _speed = 2.0f;
         [SerializeField] private GridInformation _info;
+        [SerializeField] private TileBase _selectedTile;
         
         private MouseInput _mouseInput;
         private Camera _camera;
         private Vector3? _destination;
+        
 
         private void Awake()
         {
@@ -80,9 +82,7 @@ namespace Prototype01
                 var tile = GetTileFromMousePos(currMousePos);
                 if (tile.HasValue)
                 {
-                    _info.SetPositionProperty(tile.Value, "name", Color.cyan);
-                    var hoveredTile = _tilemap.GetTile(tile.Value);
-                    _tilemap.SetTile(tile.Value, null);
+                    _tilemap.SetTile(tile.Value, _selectedTile);
                 }
             }
 

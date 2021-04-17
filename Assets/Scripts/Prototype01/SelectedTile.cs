@@ -4,10 +4,9 @@ using UnityEngine.Tilemaps;
 
 namespace Prototype01
 {
-    public class ClickableTile : Tile
+    public class SelectedTile : Tile
     {
-        private ClickableTileBehaviour _behaviour;
-        
+
 #if UNITY_EDITOR
         [MenuItem("Assets/Create/Clickable Tile")]
         public static void CreatePrefabTiles()
@@ -19,7 +18,7 @@ namespace Prototype01
                 return;
             }
  
-            AssetDatabase.CreateAsset(CreateInstance<ClickableTile>(), path);
+            AssetDatabase.CreateAsset(CreateInstance<SelectedTile>(), path);
         }
 #endif
         
@@ -43,10 +42,6 @@ namespace Prototype01
 
         public override bool StartUp(Vector3Int position, ITilemap tilemap, GameObject go)
         {
-            if (Application.isPlaying)
-            {
-                _behaviour = go.GetComponent<ClickableTileBehaviour>();
-            }
             Debug.Log($"ClickableTile StartUp position {position} tilemap {tilemap} go {go?.name}");
             return base.StartUp(position, tilemap, go);
         }

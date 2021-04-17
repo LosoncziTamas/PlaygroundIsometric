@@ -14,7 +14,7 @@ namespace Prototype01
             
         }
 
-        public void HighLight(ClickableTile tile)
+        public void HighLight(SelectedTile tile)
         {
             Debug.Log("[ClickableTileBehaviour] HighLight");
         }
