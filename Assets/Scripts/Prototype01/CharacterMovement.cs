@@ -1,26 +1,18 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
 
 namespace Prototype01
 {
     public class CharacterMovement : MonoBehaviour
     {
-        [SerializeField] private Tilemap _tilemap;
         [SerializeField] private float _speed = 2.0f;
-        [SerializeField] private GridInformation _info;
-        [SerializeField] private TileBase _selectedTile;
         
         private MouseInput _mouseInput;
-        private Camera _camera;
         private Vector3? _destination;
         
-
         private void Awake()
         {
             _mouseInput = new MouseInput();
-            _camera = Camera.main;
         }
         
         private void Start()
@@ -35,27 +27,11 @@ namespace Prototype01
         
         private void OnMouseClick(InputAction.CallbackContext obj)
         {
-            var mousePos = _mouseInput.Mouse.MousePosition.ReadValue<Vector2>();
-            var tile = GetTileFromMousePos(mousePos);
-            if (tile.HasValue)
+            var tilePos = MouseToTile.Instance.WorldPos;
+            if (tilePos.HasValue)
             {
-                _destination = _tilemap.CellToWorld(tile.Value);
+                _destination = tilePos.Value;
             }
-        }
-
-        private Vector3Int? GetTileFromMousePos(Vector2 mousePos)
-        {
-            var screenPos = _camera.ScreenToWorldPoint(mousePos);
-            screenPos.z = 0;
-
-            var tile = _tilemap.WorldToCell(screenPos);
-            
-            if (_tilemap.HasTile(tile))
-            {
-                return tile;
-            }
-
-            return null;
         }
 
         private void FixedUpdate()
@@ -69,24 +45,6 @@ namespace Prototype01
                     transform.position = Vector3.MoveTowards(currentPos, targetPos, Time.deltaTime * _speed);
                 }
             }
-        }
-
-        private Vector2 _lastMousePos = Vector3.zero;
-
-        private void Update()
-        {
-            var currMousePos = _mouseInput.Mouse.MousePosition.ReadValue<Vector2>();
-            
-            if (Vector2.Distance(currMousePos, _lastMousePos) > 0.01f)
-            {
-                var tile = GetTileFromMousePos(currMousePos);
-                if (tile.HasValue)
-                {
-                    _tilemap.SetTile(tile.Value, _selectedTile);
-                }
-            }
-
-            _lastMousePos = currMousePos;
         }
 
         private void OnDisable()
