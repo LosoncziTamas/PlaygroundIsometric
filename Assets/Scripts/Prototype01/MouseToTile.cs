@@ -5,6 +5,8 @@ namespace Prototype01
 {
     public class MouseToTile : MonoBehaviour
     {
+        private static readonly Vector3 TileOffset = Vector3.up * 0.5f; 
+        
         public static MouseToTile Instance;
         
         [SerializeField] private Tilemap[] _tilemaps;
@@ -49,7 +51,7 @@ namespace Prototype01
                 if (tileMap.HasTile(tile))
                 {
                     Tile = tile;
-                    WorldPos = tileMap.CellToWorld(tile);
+                    WorldPos = tileMap.CellToWorld(tile) + TileOffset;
                 }
             }
         }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -34,13 +35,21 @@ namespace Prototype01
             }
         }
 
+        private void OnDrawGizmos()
+        {
+            if (_destination.HasValue)
+            {
+                Gizmos.DrawLine(transform.position, _destination.Value);
+            }
+        }
+
         private void FixedUpdate()
         {
             if (_destination.HasValue)
             {
                 var targetPos = _destination.Value;
                 var currentPos = transform.position;
-                if (Vector3.Distance(targetPos, currentPos) > 0.1f)
+                if (Vector3.Distance(targetPos, currentPos) > 0.01f)
                 {
                     transform.position = Vector3.MoveTowards(currentPos, targetPos, Time.deltaTime * _speed);
                 }
