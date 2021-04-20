@@ -4716,7 +4716,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 0
-      m_TileSpriteIndex: 0
+      m_TileSpriteIndex: 2
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -4811,12 +4811,12 @@ Tilemap:
   - m_RefCount: 0
     m_Data: {fileID: 0}
   m_TileSpriteArray:
-  - m_RefCount: 1
-    m_Data: {fileID: -8585424847461702442, guid: 31d1996e6eb964b2ea687d04ebe5eb92, type: 3}
-  - m_RefCount: 28
-    m_Data: {fileID: -210866551962877471, guid: 31d1996e6eb964b2ea687d04ebe5eb92, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
+  - m_RefCount: 28
+    m_Data: {fileID: -210866551962877471, guid: 31d1996e6eb964b2ea687d04ebe5eb92, type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: -8585424847461702442, guid: 31d1996e6eb964b2ea687d04ebe5eb92, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 29
     m_Data:
@@ -6356,6 +6356,11 @@ MonoBehaviour:
   _tilemaps:
   - {fileID: 15232702}
   - {fileID: 1157758956}
+  _tileMapPropses:
+  - Tilemap: {fileID: 15232702}
+    Offset: {x: 0, y: 0.5, z: 0}
+  - Tilemap: {fileID: 1157758956}
+    Offset: {x: 0, y: 0.7, z: 0}
 --- !u!4 &1996390527
 Transform:
   m_ObjectHideFlags: 0
@@ -6434,10 +6439,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3868455835017828760, guid: 4310c18448eab41dc9e5f567ee1bb5c3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3868455835448007954, guid: 4310c18448eab41dc9e5f567ee1bb5c3, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -6482,17 +6483,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3868455835448007955, guid: 4310c18448eab41dc9e5f567ee1bb5c3, type: 3}
-      propertyPath: _tilemap
-      value: 
-      objectReference: {fileID: 15232702}
     - target: {fileID: 3868455835448007964, guid: 4310c18448eab41dc9e5f567ee1bb5c3, type: 3}
       propertyPath: m_Name
       value: TileCursor
-      objectReference: {fileID: 0}
-    - target: {fileID: 3868455835448007964, guid: 4310c18448eab41dc9e5f567ee1bb5c3, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4310c18448eab41dc9e5f567ee1bb5c3, type: 3}

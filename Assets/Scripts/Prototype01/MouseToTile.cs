@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -5,16 +6,22 @@ namespace Prototype01
 {
     public class MouseToTile : MonoBehaviour
     {
-        private static readonly Vector3 TileOffset = Vector3.up * 0.5f; 
+        [Serializable]
+        public struct TileMapProps
+        {
+            public Tilemap Tilemap;
+            public Vector3 Offset;
+        }
         
         public static MouseToTile Instance;
         
-        [SerializeField] private Tilemap[] _tilemaps;
+        [SerializeField] private TileMapProps[] _tileMapPropses;
         
         private MouseInput _mouseInput;
         private Camera _camera;
         
         public Vector3Int? Tile {get; private set; }
+        
         public Vector3? WorldPos { get; private set; }
 
         private void Awake()
@@ -43,15 +50,15 @@ namespace Prototype01
             Tile = null;
             WorldPos = null;
             
-            for (var i = 0; i < _tilemaps.Length; i++)
+            for (var i = 0; i < _tileMapPropses.Length; i++)
             {
-                var tileMap = _tilemaps[i];
+                var tileMap = _tileMapPropses[i].Tilemap;
                 var tile = tileMap.WorldToCell(screenPos);
                 
                 if (tileMap.HasTile(tile))
                 {
                     Tile = tile;
-                    WorldPos = tileMap.CellToWorld(tile) + TileOffset;
+                    WorldPos = tileMap.CellToWorld(tile) + _tileMapPropses[i].Offset;
                 }
             }
         }
