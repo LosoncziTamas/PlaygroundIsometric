@@ -50,7 +50,10 @@ namespace Prototype01
                 var currentPos = transform.position;
                 if (Vector3.Distance(targetPos, currentPos) > 0.01f)
                 {
-                    transform.position = Vector3.MoveTowards(currentPos, targetPos, Time.deltaTime * _speed);
+                    if (MouseToTile.Instance.TileIsWalkable(targetPos))
+                    {
+                        transform.position = Vector3.MoveTowards(currentPos, targetPos, Time.deltaTime * _speed);
+                    }
                 }
             }
         }
