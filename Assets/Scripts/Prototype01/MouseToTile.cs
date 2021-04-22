@@ -62,7 +62,7 @@ namespace Prototype01
                 }
             }
         }
-
+        
         public bool TileIsWalkable(Vector3 worldPos)
         {
             for (var i = 0; i < _tileMapPropses.Length; i++)
