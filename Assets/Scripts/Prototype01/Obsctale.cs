@@ -3,7 +3,7 @@ using UnityEngine.Tilemaps;
 
 namespace Prototype01
 {
-    public class WalkableTile : Tile
+    public class Obsctale : Tile
     {
 #if UNITY_EDITOR
         [MenuItem("Assets/Create/Walkable Tile")]
@@ -16,7 +16,7 @@ namespace Prototype01
                 return;
             }
  
-            AssetDatabase.CreateAsset(CreateInstance<WalkableTile>(), path);
+            AssetDatabase.CreateAsset(CreateInstance<Obsctale>(), path);
         }
 #endif
     }

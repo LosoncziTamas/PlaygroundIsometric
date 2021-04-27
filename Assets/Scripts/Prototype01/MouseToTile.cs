@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -75,9 +76,9 @@ namespace Prototype01
                     if (tileMap.HasTile(relativePos))
                     {
                         var tile = tileMap.GetTile(relativePos);
-                        var walkable = tile.GetType() == typeof(WalkableTile);
+                        var obstacle = tile.GetType() == typeof(Obsctale);
                         var worldPos = tileMap.CellToWorld(relativePos);
-                        Gizmos.color = walkable ? Color.green : Color.red;
+                        Gizmos.color = obstacle ? Color.red : Color.green;
                         Gizmos.DrawCube(worldPos + offset, Vector3.one * 0.1f);
                     }
                 }
@@ -92,11 +93,32 @@ namespace Prototype01
                 var cell = tileMap.WorldToCell(worldPos);
                 if (tileMap.HasTile(cell))
                 {
-                    return true;
+                    var tile = tileMap.GetTile(cell);
+                    return tile.GetType() != typeof(Obsctale);
                 }
             }
 
             return false;
+        }
+
+        public List<Vector3Int> GetNeighbourCells(Vector3Int cell)
+        {
+            // TODO:
+            return new List<Vector3Int>();
+        }
+        
+        public Vector3Int? WorldPosToCell(Vector3 worldPos)
+        {
+            for (var i = 0; i < _tileMapPropses.Length; i++)
+            {
+                var tileMap = _tileMapPropses[i].Tilemap;
+                var cell = tileMap.WorldToCell(worldPos);
+                if (tileMap.HasTile(cell))
+                {
+                    return cell;
+                }
+            }
+            return null;
         }
     }
 }

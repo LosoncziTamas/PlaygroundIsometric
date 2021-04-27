@@ -31,6 +31,7 @@ namespace Prototype01
             if (tilePos.HasValue)
             {
                 _destination = tilePos.Value;
+                FindPath(transform.position, tilePos.Value);
             }
         }
 
@@ -57,6 +58,11 @@ namespace Prototype01
                     }
                 }
             }
+        }
+
+        public void FindPath(Vector3 start, Vector3 end)
+        {
+            
         }
 
         private void OnDisable()
