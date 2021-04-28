@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -62,6 +63,42 @@ namespace Prototype01
 
         public void FindPath(Vector3 start, Vector3 end)
         {
+            var openNodes = new List<Node>();
+            var closedNodes = new List<Node>();
+
+            var startCell = MouseToTile.Instance.WorldPosToCell(start);
+            var endCell = MouseToTile.Instance.WorldPosToCell(end);
+
+            if (!startCell.HasValue || !endCell.HasValue)
+            {
+                return;
+            }
+            
+            var startNode = new Node(startCell.Value, start, start, end);
+            openNodes.Add(startNode);
+
+            while (openNodes.Count > 0)
+            {
+                var currNode = openNodes[0];
+                for (var nodeIndex = 1; nodeIndex < openNodes.Count; ++nodeIndex)
+                {
+                    if (currNode.FCost > openNodes[nodeIndex].FCost)
+                    {
+                        currNode = openNodes[nodeIndex];
+                    }
+                }
+
+                openNodes.Remove(currNode);
+                closedNodes.Add(currNode);
+
+                if (currNode.OnSameCell(endCell.Value))
+                {
+                    //path found
+                    return;
+                }
+                
+                // TODO: find neighbours
+            }
             
         }
 
