@@ -103,8 +103,24 @@ namespace Prototype01
 
         public List<Vector3Int> GetNeighbourCells(Vector3Int cell)
         {
-            // TODO:
-            return new List<Vector3Int>();
+            var result = new List<Vector3Int>();
+            
+            var cellBounds = new BoundsInt(cell.x - 1, cell.y - 1, cell.z - 1, 3, 3, 3);
+            var tileMap = _tileMapPropses[0].Tilemap;
+            foreach (var boundInt in cellBounds.allPositionsWithin)
+            {
+                var relativePos = new Vector3Int(boundInt.x, boundInt.y, boundInt.z);
+                if (tileMap.HasTile(relativePos) && !relativePos.Equals(cell))
+                {
+                    var tile = tileMap.GetTile(cell);
+                    if (tile.GetType() != typeof(Obsctale))
+                    {
+                        result.Add(relativePos);
+                    }
+                }
+            }
+            // TODO: visualize
+            return result;
         }
         
         public Vector3Int? WorldPosToCell(Vector3 worldPos)
@@ -120,5 +136,6 @@ namespace Prototype01
             }
             return null;
         }
+
     }
 }

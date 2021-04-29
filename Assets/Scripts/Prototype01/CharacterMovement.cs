@@ -97,9 +97,9 @@ namespace Prototype01
                     return;
                 }
                 
-                // TODO: find neighbours
+                var neighbourCells = MouseToTile.Instance.GetNeighbourCells(currNode.Cell);
+                return;
             }
-            
         }
 
         private void OnDisable()

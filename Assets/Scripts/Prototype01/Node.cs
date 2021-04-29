@@ -4,16 +4,17 @@ namespace Prototype01
 {
     public class Node
     {
-        private readonly Vector3Int _cellPos;
         private readonly Vector3 _worldPos;
         
         public float FCost { get; }
         
         public float HCost { get; }
 
+        public Vector3Int Cell { get; }
+
         public Node(Vector3Int cellPos, Vector3 worldPos, Vector3 startPos, Vector3 endPos)
         {
-            _cellPos = cellPos;
+            Cell = cellPos;
             _worldPos = worldPos;
             HCost = Vector3.Distance(endPos, worldPos);
             var gCost = Vector3.Distance(startPos, worldPos);
@@ -22,7 +23,7 @@ namespace Prototype01
 
         public override string ToString()
         {
-            return $"Cell: {_cellPos} FCost {FCost} HCost {HCost}";
+            return $"Cell: {Cell} FCost {FCost} HCost {HCost}";
         }
 
         public override bool Equals(object other)
@@ -31,17 +32,17 @@ namespace Prototype01
             {
                 return false;
             }
-            return ((Node) other)._cellPos.Equals(_cellPos);
+            return ((Node) other).Cell.Equals(Cell);
         }
 
         public override int GetHashCode()
         {
-            return _cellPos.GetHashCode();
+            return Cell.GetHashCode();
         }
 
         public bool OnSameCell(Vector3Int otherCell)
         {
-            return _cellPos.Equals(otherCell);
+            return Cell.Equals(otherCell);
         }
     }
 }
