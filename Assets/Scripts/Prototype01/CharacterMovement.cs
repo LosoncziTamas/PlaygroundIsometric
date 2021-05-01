@@ -42,6 +42,16 @@ namespace Prototype01
             {
                 Gizmos.DrawLine(transform.position, _destination.Value);
             }
+
+            foreach (var cell in _neighbouringCells)
+            {
+                var worldPos =  MouseToTile.Instance.CellToWorldPos(cell);
+                if (worldPos.HasValue)
+                {
+                    Gizmos.color = Color.magenta;
+                    Gizmos.DrawCube(worldPos.Value,Vector3.one * 0.15f);
+                }
+            }
         }
         
         private void FixedUpdate()
@@ -60,6 +70,8 @@ namespace Prototype01
                 }
             }
         }
+
+        private List<Vector3Int> _neighbouringCells = new List<Vector3Int>();
 
         public void FindPath(Vector3 start, Vector3 end)
         {
@@ -97,7 +109,9 @@ namespace Prototype01
                     return;
                 }
                 
+                _neighbouringCells.Clear();
                 var neighbourCells = MouseToTile.Instance.GetNeighbourCells(currNode.Cell);
+                _neighbouringCells.AddRange(neighbourCells);
                 return;
             }
         }

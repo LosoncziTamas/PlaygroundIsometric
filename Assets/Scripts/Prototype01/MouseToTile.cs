@@ -85,6 +85,21 @@ namespace Prototype01
             }
         }
 
+        public Vector3? CellToWorldPos(Vector3Int cell)
+        {
+            for (var i = 0; i < _tileMapPropses.Length; i++)
+            {
+                var tileMap = _tileMapPropses[i].Tilemap;
+                var offset = _tileMapPropses[i].Offset;
+                if (tileMap.HasTile(cell))
+                {
+                    return tileMap.CellToWorld(cell) + offset;
+                }
+            }
+
+            return null;
+        }
+
         public bool TileIsWalkable(Vector3 worldPos)
         {
             for (var i = 0; i < _tileMapPropses.Length; i++)
