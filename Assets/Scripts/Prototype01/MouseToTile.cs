@@ -134,7 +134,6 @@ namespace Prototype01
                     }
                 }
             }
-            // TODO: visualize
             return result;
         }
         

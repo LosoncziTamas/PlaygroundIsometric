@@ -4,18 +4,18 @@ namespace Prototype01
 {
     public class Node
     {
-        private readonly Vector3 _worldPos;
-        
         public float FCost { get; }
         
         public float HCost { get; }
 
         public Vector3Int Cell { get; }
+        
+        public Vector3 WorldPos { get; }
 
         public Node(Vector3Int cellPos, Vector3 worldPos, Vector3 startPos, Vector3 endPos)
         {
             Cell = cellPos;
-            _worldPos = worldPos;
+            WorldPos = worldPos;
             HCost = Vector3.Distance(endPos, worldPos);
             var gCost = Vector3.Distance(startPos, worldPos);
             FCost = gCost + HCost;

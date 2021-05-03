@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -43,14 +44,10 @@ namespace Prototype01
                 Gizmos.DrawLine(transform.position, _destination.Value);
             }
 
-            foreach (var cell in _neighbouringCells)
+            foreach (var node in _closedNodes)
             {
-                var worldPos =  MouseToTile.Instance.CellToWorldPos(cell);
-                if (worldPos.HasValue)
-                {
-                    Gizmos.color = Color.magenta;
-                    Gizmos.DrawCube(worldPos.Value,Vector3.one * 0.15f);
-                }
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawCube(node.WorldPos,Vector3.one * 0.15f);
             }
         }
         
@@ -71,12 +68,15 @@ namespace Prototype01
             }
         }
 
-        private List<Vector3Int> _neighbouringCells = new List<Vector3Int>();
+        private List<Node> _closedNodes = new List<Node>();
+
+        private int counter = 0;
 
         public void FindPath(Vector3 start, Vector3 end)
         {
+            counter = 0;
             var openNodes = new List<Node>();
-            var closedNodes = new List<Node>();
+            var closedNodes = new Dictionary<Vector3Int, Node>();
 
             var startCell = MouseToTile.Instance.WorldPosToCell(start);
             var endCell = MouseToTile.Instance.WorldPosToCell(end);
@@ -101,18 +101,30 @@ namespace Prototype01
                 }
 
                 openNodes.Remove(currNode);
-                closedNodes.Add(currNode);
+                if (!closedNodes.ContainsKey(currNode.Cell))
+                {
+                    closedNodes.Add(currNode.Cell, currNode);
+                }
+                _closedNodes.Clear();
+                _closedNodes.AddRange(closedNodes.Values);
 
                 if (currNode.OnSameCell(endCell.Value))
                 {
                     //path found
                     return;
                 }
+
+                counter++;
+                if (counter > 1000)
+                {
+                    return;
+                }
                 
-                _neighbouringCells.Clear();
+                // TODO: check for equality
+                
                 var neighbourCells = MouseToTile.Instance.GetNeighbourCells(currNode.Cell);
-                _neighbouringCells.AddRange(neighbourCells);
-                return;
+                var cells = neighbourCells.Select(v => new Node(v, MouseToTile.Instance.CellToWorldPos(v).GetValueOrDefault() , startCell.Value, endCell.Value)).ToList();
+                openNodes.AddRange(cells);
             }
         }
 
