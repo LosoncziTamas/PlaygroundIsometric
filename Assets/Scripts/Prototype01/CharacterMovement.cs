@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -49,6 +48,12 @@ namespace Prototype01
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawCube(node.WorldPos,Vector3.one * 0.15f);
             }
+            
+            foreach (var node in _openNodes)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawCube(node.WorldPos,Vector3.one * 0.15f);
+            }
         }
         
         private void FixedUpdate()
@@ -69,6 +74,7 @@ namespace Prototype01
         }
 
         private List<Node> _closedNodes = new List<Node>();
+        private List<Node> _openNodes = new List<Node>();
 
         private int counter = 0;
 
@@ -76,7 +82,7 @@ namespace Prototype01
         {
             counter = 0;
             var openNodes = new List<Node>();
-            var closedNodes = new Dictionary<Vector3Int, Node>();
+            var closedNodes = new HashSet<Node>();
 
             var startCell = MouseToTile.Instance.WorldPosToCell(start);
             var endCell = MouseToTile.Instance.WorldPosToCell(end);
@@ -94,20 +100,19 @@ namespace Prototype01
                 var currNode = openNodes[0];
                 for (var nodeIndex = 1; nodeIndex < openNodes.Count; ++nodeIndex)
                 {
-                    if (currNode.FCost > openNodes[nodeIndex].FCost)
+                    var otherNode = openNodes[nodeIndex];
+                    var betterNode = otherNode.FCost < currNode.FCost ||
+                                     Mathf.Approximately(otherNode.FCost, currNode.FCost) &&
+                                     otherNode.HCost < currNode.HCost;
+                    if (betterNode)
                     {
-                        currNode = openNodes[nodeIndex];
+                        currNode = otherNode;
                     }
                 }
 
                 openNodes.Remove(currNode);
-                if (!closedNodes.ContainsKey(currNode.Cell))
-                {
-                    closedNodes.Add(currNode.Cell, currNode);
-                }
-                _closedNodes.Clear();
-                _closedNodes.AddRange(closedNodes.Values);
-
+                closedNodes.Add(currNode);
+                
                 if (currNode.OnSameCell(endCell.Value))
                 {
                     //path found
@@ -115,17 +120,36 @@ namespace Prototype01
                 }
 
                 counter++;
-                if (counter > 1000)
+                if (counter > 10000)
                 {
                     return;
                 }
                 
-                // TODO: check for equality
-                
                 var neighbourCells = MouseToTile.Instance.GetNeighbourCells(currNode.Cell);
-                var cells = neighbourCells.Select(v => new Node(v, MouseToTile.Instance.CellToWorldPos(v).GetValueOrDefault() , startCell.Value, endCell.Value)).ToList();
-                openNodes.AddRange(cells);
+                var neighbourNodes = new List<Node>();
+                foreach (var neighbourCell in neighbourCells)
+                {
+                    var neighbourNode = new Node(neighbourCell, MouseToTile.Instance.CellToWorldPos(neighbourCell).GetValueOrDefault(), startCell.Value, endCell.Value);
+                    if (closedNodes.Contains(neighbourNode))
+                    {
+                        continue;
+                    }
+                    neighbourNodes.Add(neighbourNode);
+                }
+                
+
+                
+                _openNodes.Clear();
+                _openNodes.AddRange(openNodes);
+                
+                _closedNodes.Clear();
+                _closedNodes.AddRange(closedNodes);
             }
+        }
+
+        float GetDistance()
+        {
+            return 0;
         }
 
         private void OnDisable()

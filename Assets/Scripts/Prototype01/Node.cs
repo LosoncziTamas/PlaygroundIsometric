@@ -16,6 +16,7 @@ namespace Prototype01
         {
             Cell = cellPos;
             WorldPos = worldPos;
+            // TODO: recalculate distance
             HCost = Vector3.Distance(endPos, worldPos);
             var gCost = Vector3.Distance(startPos, worldPos);
             FCost = gCost + HCost;
