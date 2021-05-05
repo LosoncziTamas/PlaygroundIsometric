@@ -65,7 +65,8 @@ namespace Prototype01
                 if (Vector3.Distance(targetPos, currentPos) > 0.01f)
                 {
                     var nextPos = Vector3.MoveTowards(currentPos, targetPos, Time.deltaTime * _speed);
-                    if (MouseToTile.Instance.TileIsWalkable(nextPos))
+                    var walkableTile = MouseToTile.Instance.WorldPosToTile(nextPos)?.GetType() != typeof(Obsctale);
+                    if (walkableTile)
                     {
                         transform.position = nextPos;
                     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -84,23 +85,9 @@ namespace Prototype01
                 }
             }
         }
-
-        public Vector3? CellToWorldPos(Vector3Int cell)
-        {
-            for (var i = 0; i < _tileMapPropses.Length; i++)
-            {
-                var tileMap = _tileMapPropses[i].Tilemap;
-                var offset = _tileMapPropses[i].Offset;
-                if (tileMap.HasTile(cell))
-                {
-                    return tileMap.CellToWorld(cell) + offset;
-                }
-            }
-
-            return null;
-        }
-
-        public bool TileIsWalkable(Vector3 worldPos)
+        
+        [CanBeNull]
+        public TileBase WorldPosToTile(Vector3 worldPos)
         {
             for (var i = 0; i < _tileMapPropses.Length; i++)
             {
@@ -109,11 +96,31 @@ namespace Prototype01
                 if (tileMap.HasTile(cell))
                 {
                     var tile = tileMap.GetTile(cell);
-                    return tile.GetType() != typeof(Obsctale);
+                    return tile;
                 }
             }
 
-            return false;
+            return null;
+        }
+        
+        [CanBeNull]
+        public T WorldPosToTile<T>(Vector3 worldPos) where T : TileBase
+        {
+            for (var i = 0; i < _tileMapPropses.Length; i++)
+            {
+                var tileMap = _tileMapPropses[i].Tilemap;
+                var cell = tileMap.WorldToCell(worldPos);
+                if (tileMap.HasTile(cell))
+                {
+                    var tile = tileMap.GetTile(cell);
+                    if (tile is T typedTile)
+                    {
+                        return typedTile;
+                    }
+                }
+            }
+            
+            return default;
         }
 
         public List<Vector3Int> GetNeighbourCells(Vector3Int cell)
@@ -148,6 +155,21 @@ namespace Prototype01
                     return cell;
                 }
             }
+            return null;
+        }
+        
+        public Vector3? CellToWorldPos(Vector3Int cell)
+        {
+            for (var i = 0; i < _tileMapPropses.Length; i++)
+            {
+                var tileMap = _tileMapPropses[i].Tilemap;
+                var offset = _tileMapPropses[i].Offset;
+                if (tileMap.HasTile(cell))
+                {
+                    return tileMap.CellToWorld(cell) + offset;
+                }
+            }
+
             return null;
         }
 
