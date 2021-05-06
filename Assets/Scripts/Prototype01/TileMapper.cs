@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 
 namespace Prototype01
 {
-    public class MouseToTile : MonoBehaviour
+    public class TileMapper : MonoBehaviour
     {
         [Serializable]
         public struct TileMapProps
@@ -15,22 +15,19 @@ namespace Prototype01
             public Vector3 Offset;
         }
         
-        public static MouseToTile Instance;
-        
         [SerializeField] private TileMapProps[] _tileMapPropses;
         
         private MouseInput _mouseInput;
         private Camera _camera;
         
-        public Vector3Int? Tile {get; private set; }
+        public Vector3Int? MouseHoveredCell {get; private set; }
         
-        public Vector3? WorldPos { get; private set; }
+        public Vector3? MouseHoveredTileWorldPos { get; private set; }
 
         private void Awake()
         {
             _mouseInput = new MouseInput();
             _camera = Camera.main;
-            Instance = this;
         }
         
         private void OnEnable()
@@ -49,8 +46,8 @@ namespace Prototype01
             var screenPos = _camera.ScreenToWorldPoint(mouse);
             screenPos.z = 0;
 
-            Tile = null;
-            WorldPos = null;
+            MouseHoveredCell = null;
+            MouseHoveredTileWorldPos = null;
             
             for (var i = 0; i < _tileMapPropses.Length; i++)
             {
@@ -59,8 +56,8 @@ namespace Prototype01
                 
                 if (tileMap.HasTile(tile))
                 {
-                    Tile = tile;
-                    WorldPos = tileMap.CellToWorld(tile) + _tileMapPropses[i].Offset;
+                    MouseHoveredCell = tile;
+                    MouseHoveredTileWorldPos = tileMap.CellToWorld(tile) + _tileMapPropses[i].Offset;
                 }
             }
         }

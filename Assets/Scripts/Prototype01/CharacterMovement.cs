@@ -7,10 +7,11 @@ namespace Prototype01
     public class CharacterMovement : MonoBehaviour
     {
         [SerializeField] private float _speed = 2.0f;
-        
+        [SerializeField] private TileMapper _tileMapper;
+
         private MouseInput _mouseInput;
         private Vector3? _destination;
-        
+
         private void Awake()
         {
             _mouseInput = new MouseInput();
@@ -28,7 +29,7 @@ namespace Prototype01
         
         private void OnMouseClick(InputAction.CallbackContext obj)
         {
-            var tilePos = MouseToTile.Instance.WorldPos;
+            var tilePos = _tileMapper.MouseHoveredTileWorldPos;
             if (tilePos.HasValue)
             {
                 _destination = tilePos.Value;
@@ -65,7 +66,7 @@ namespace Prototype01
                 if (Vector3.Distance(targetPos, currentPos) > 0.01f)
                 {
                     var nextPos = Vector3.MoveTowards(currentPos, targetPos, Time.deltaTime * _speed);
-                    var walkableTile = MouseToTile.Instance.WorldPosToTile(nextPos)?.GetType() != typeof(Obsctale);
+                    var walkableTile = _tileMapper.WorldPosToTile(nextPos)?.GetType() != typeof(Obsctale);
                     if (walkableTile)
                     {
                         transform.position = nextPos;
@@ -85,8 +86,8 @@ namespace Prototype01
             var openNodes = new List<Node>();
             var closedNodes = new HashSet<Node>();
 
-            var startCell = MouseToTile.Instance.WorldPosToCell(start);
-            var endCell = MouseToTile.Instance.WorldPosToCell(end);
+            var startCell = _tileMapper.WorldPosToCell(start);
+            var endCell = _tileMapper.WorldPosToCell(end);
 
             if (!startCell.HasValue || !endCell.HasValue)
             {
@@ -126,11 +127,11 @@ namespace Prototype01
                     return;
                 }
                 
-                var neighbourCells = MouseToTile.Instance.GetNeighbourCells(currNode.Cell);
+                var neighbourCells = _tileMapper.GetNeighbourCells(currNode.Cell);
                 var neighbourNodes = new List<Node>();
                 foreach (var neighbourCell in neighbourCells)
                 {
-                    var neighbourNode = new Node(neighbourCell, MouseToTile.Instance.CellToWorldPos(neighbourCell).GetValueOrDefault(), startCell.Value, endCell.Value);
+                    var neighbourNode = new Node(neighbourCell, _tileMapper.CellToWorldPos(neighbourCell).GetValueOrDefault(), startCell.Value, endCell.Value);
                     if (closedNodes.Contains(neighbourNode))
                     {
                         continue;
@@ -138,7 +139,6 @@ namespace Prototype01
                     neighbourNodes.Add(neighbourNode);
                 }
                 
-
                 
                 _openNodes.Clear();
                 _openNodes.AddRange(openNodes);

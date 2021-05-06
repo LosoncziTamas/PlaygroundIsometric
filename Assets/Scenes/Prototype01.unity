@@ -5796,7 +5796,7 @@ GameObject:
   - component: {fileID: 1996390527}
   - component: {fileID: 1996390526}
   m_Layer: 0
-  m_Name: MouseToTile
+  m_Name: TileMapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5888,6 +5888,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 1121821481050055359, guid: dc7ed8f5ee176488182c127a41c4e3e0, type: 3}
+      propertyPath: _tileMapper
+      value: 
+      objectReference: {fileID: 1996390526}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc7ed8f5ee176488182c127a41c4e3e0, type: 3}
 --- !u!1001 &3868455836748282027
@@ -5941,6 +5945,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3868455835448007955, guid: 4310c18448eab41dc9e5f567ee1bb5c3, type: 3}
+      propertyPath: _tileMapper
+      value: 
+      objectReference: {fileID: 1996390526}
     - target: {fileID: 3868455835448007964, guid: 4310c18448eab41dc9e5f567ee1bb5c3, type: 3}
       propertyPath: m_Name
       value: TileCursor
