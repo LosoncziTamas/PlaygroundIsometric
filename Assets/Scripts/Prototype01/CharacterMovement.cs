@@ -94,7 +94,7 @@ namespace Prototype01
                 return;
             }
             
-            var startNode = new Node(startCell.Value, start, start, end);
+            var startNode = new Node(startCell.Value, start, start, endCell.Value);
             openNodes.Add(startNode);
 
             while (openNodes.Count > 0)
@@ -146,11 +146,6 @@ namespace Prototype01
                 _closedNodes.Clear();
                 _closedNodes.AddRange(closedNodes);
             }
-        }
-
-        float GetDistance()
-        {
-            return 0;
         }
 
         private void OnDisable()
