@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Prototype01
@@ -11,18 +10,20 @@ namespace Prototype01
         public float FCost { get; }
         
         public float HCost { get; }
+        
+        public float GCost { get; }
 
         public Vector3Int Cell { get; }
         
         public Vector3 WorldPos { get; }
 
-        public Node(Vector3Int cellPos, Vector3 worldPos, Vector3 startPos, Vector3Int endCellPos)
+        public Node(Vector3Int cellPos, Vector3 worldPos, Vector3Int startCellPos, Vector3Int endCellPos)
         {
             Cell = cellPos;
             WorldPos = worldPos;
             HCost = CellDistance(endCellPos, cellPos);
-            var gCost = Vector3.Distance(startPos, worldPos);
-            FCost = gCost + HCost;
+            GCost = CellDistance(startCellPos, cellPos);
+            FCost = GCost + HCost;
         }
 
         public static float CellDistance(Vector3Int start, Vector3Int end)

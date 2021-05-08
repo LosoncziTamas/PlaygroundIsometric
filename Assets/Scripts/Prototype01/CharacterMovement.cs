@@ -94,7 +94,7 @@ namespace Prototype01
                 return;
             }
             
-            var startNode = new Node(startCell.Value, start, start, endCell.Value);
+            var startNode = new Node(startCell.Value, start, startCell.Value, endCell.Value);
             openNodes.Add(startNode);
 
             while (openNodes.Count > 0)
@@ -136,7 +136,12 @@ namespace Prototype01
                     {
                         continue;
                     }
-                    neighbourNodes.Add(neighbourNode);
+
+                    var movementCostToNeighbour = currNode.GCost + Node.CellDistance(currNode.Cell, neighbourNode.Cell);
+                    if (movementCostToNeighbour < neighbourNode.GCost || !openNodes.Contains(neighbourNode))
+                    {
+                        // TODO: update costs
+                    }
                 }
                 
                 
