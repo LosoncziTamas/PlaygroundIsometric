@@ -5,17 +5,19 @@ namespace Prototype01
     public class Node
     {
         private const float UnitDistance = 10.0f;
-        private static readonly float UnitDistanceDiagonal = Mathf.Sqrt(UnitDistance);
+        private static readonly float UnitDistanceDiagonal = UnitDistance * Mathf.Sqrt(2);
+
+        public float FCost => GCost + HCost;
         
-        public float FCost { get; }
+        public float HCost { get; set; }
         
-        public float HCost { get; }
-        
-        public float GCost { get; }
+        public float GCost { get; set; }
 
         public Vector3Int Cell { get; }
         
         public Vector3 WorldPos { get; }
+        
+        public Node Parent { get; set; }
 
         public Node(Vector3Int cellPos, Vector3 worldPos, Vector3Int startCellPos, Vector3Int endCellPos)
         {
@@ -23,7 +25,6 @@ namespace Prototype01
             WorldPos = worldPos;
             HCost = CellDistance(endCellPos, cellPos);
             GCost = CellDistance(startCellPos, cellPos);
-            FCost = GCost + HCost;
         }
 
         public static float CellDistance(Vector3Int start, Vector3Int end)

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -44,21 +46,25 @@ namespace Prototype01
                 Gizmos.DrawLine(transform.position, _destination.Value);
             }
 
-            foreach (var node in _closedNodes)
+            foreach (var node in _path)
             {
+                Handles.Label(node.WorldPos, node.Cell.ToString());
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawCube(node.WorldPos,Vector3.one * 0.15f);
             }
+
+            return;
             
             foreach (var node in _openNodes)
             {
-                Gizmos.color = Color.cyan;
+                Gizmos.color = Color.black;
                 Gizmos.DrawCube(node.WorldPos,Vector3.one * 0.15f);
             }
         }
         
         private void FixedUpdate()
         {
+#if false
             if (_destination.HasValue)
             {
                 var targetPos = _destination.Value;
@@ -73,10 +79,12 @@ namespace Prototype01
                     }
                 }
             }
+#endif
         }
 
         private List<Node> _closedNodes = new List<Node>();
         private List<Node> _openNodes = new List<Node>();
+        private List<Node> _path = new List<Node>();
 
         private int counter = 0;
 
@@ -117,7 +125,7 @@ namespace Prototype01
                 
                 if (currNode.OnSameCell(endCell.Value))
                 {
-                    //path found
+                    RetracePath(startNode, currNode);
                     return;
                 }
 
@@ -128,7 +136,6 @@ namespace Prototype01
                 }
                 
                 var neighbourCells = _tileMapper.GetNeighbourCells(currNode.Cell);
-                var neighbourNodes = new List<Node>();
                 foreach (var neighbourCell in neighbourCells)
                 {
                     var neighbourNode = new Node(neighbourCell, _tileMapper.CellToWorldPos(neighbourCell).GetValueOrDefault(), startCell.Value, endCell.Value);
@@ -138,19 +145,43 @@ namespace Prototype01
                     }
 
                     var movementCostToNeighbour = currNode.GCost + Node.CellDistance(currNode.Cell, neighbourNode.Cell);
+                    // TODO: when is this true?
                     if (movementCostToNeighbour < neighbourNode.GCost || !openNodes.Contains(neighbourNode))
                     {
-                        // TODO: update costs
+                        neighbourNode.GCost = movementCostToNeighbour;
+                        // TODO: already calculated
+                        neighbourNode.HCost = Node.CellDistance(neighbourNode.Cell, endCell.Value);
+                        neighbourNode.Parent = currNode;
+
+                        if (!openNodes.Contains(neighbourNode))
+                        {
+                            openNodes.Add(neighbourNode);
+                        }
                     }
                 }
-                
-                
+
                 _openNodes.Clear();
                 _openNodes.AddRange(openNodes);
                 
                 _closedNodes.Clear();
                 _closedNodes.AddRange(closedNodes);
             }
+        }
+
+        private void RetracePath(Node start, Node end)
+        {
+            var path = new List<Node>();
+            var curr = end;
+            while (!Equals(curr.Parent, start))
+            {
+                curr = curr.Parent;
+                path.Add(curr);
+            }
+            
+            path.Reverse();
+            
+            _path.Clear();
+            _path.AddRange(path);
         }
 
         private void OnDisable()
