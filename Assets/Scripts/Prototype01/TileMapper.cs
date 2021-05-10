@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -78,6 +79,7 @@ namespace Prototype01
                         var worldPos = tileMap.CellToWorld(relativePos);
                         Gizmos.color = obstacle ? Color.red : Color.green;
                         Gizmos.DrawCube(worldPos + offset, Vector3.one * 0.1f);
+                        // Handles.Label(worldPos, relativePos.ToString());
                     }
                 }
             }
@@ -125,16 +127,25 @@ namespace Prototype01
             var result = new List<Vector3Int>();
             
             var cellBounds = new BoundsInt(cell.x - 1, cell.y - 1, cell.z - 1, 3, 3, 3);
-            var tileMap = _tileMapPropses[0].Tilemap;
+            
             foreach (var boundInt in cellBounds.allPositionsWithin)
             {
                 var relativePos = new Vector3Int(boundInt.x, boundInt.y, boundInt.z);
-                if (tileMap.HasTile(relativePos) && !relativePos.Equals(cell))
+                for (var i = 0; i < _tileMapPropses.Length; i++)
                 {
-                    var tile = tileMap.GetTile(cell);
-                    if (tile.GetType() != typeof(Obsctale))
+                    var tileMap = _tileMapPropses[i].Tilemap;
+                    if (tileMap.HasTile(relativePos) && !relativePos.Equals(cell))
                     {
-                        result.Add(relativePos);
+                        var tile = tileMap.GetTile(cell);
+                        if (tile != null && tile.GetType() != typeof(Obsctale))
+                        {
+                            result.Add(relativePos);
+                        }
+                        else
+                        {
+                            // TODO: why elevated returns null?
+                            Debug.Log("Tile was null/obstacle at " + relativePos);
+                        }
                     }
                 }
             }

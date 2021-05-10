@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,9 +13,13 @@ namespace Prototype01
         private MouseInput _mouseInput;
         private Vector3? _destination;
 
+        private List<Vector3Int> _testCells;
+
         private void Awake()
         {
             _mouseInput = new MouseInput();
+
+            _testCells =  _tileMapper.GetNeighbourCells(new Vector3Int(12, 3, 0));
         }
         
         private void Start()
@@ -46,14 +49,21 @@ namespace Prototype01
                 Gizmos.DrawLine(transform.position, _destination.Value);
             }
 
+            return;
+            foreach (var node in _testCells)
+            {
+                var worldPos = _tileMapper.CellToWorldPos(node).Value;
+                Handles.Label(worldPos, node.ToString());
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawCube(worldPos,Vector3.one * 0.15f);
+            }
+            
             foreach (var node in _path)
             {
                 Handles.Label(node.WorldPos, node.Cell.ToString());
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawCube(node.WorldPos,Vector3.one * 0.15f);
             }
-
-            return;
             
             foreach (var node in _openNodes)
             {
