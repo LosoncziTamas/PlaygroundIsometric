@@ -49,7 +49,6 @@ namespace Prototype01
                 Gizmos.DrawLine(transform.position, _destination.Value);
             }
 
-            return;
             foreach (var node in _testCells)
             {
                 var worldPos = _tileMapper.CellToWorldPos(node).Value;
@@ -58,6 +57,7 @@ namespace Prototype01
                 Gizmos.DrawCube(worldPos,Vector3.one * 0.15f);
             }
             
+            return;
             foreach (var node in _path)
             {
                 Handles.Label(node.WorldPos, node.Cell.ToString());

@@ -29,6 +29,7 @@ namespace Prototype01
         {
             _mouseInput = new MouseInput();
             _camera = Camera.main;
+            DebugTile();
         }
         
         private void OnEnable()
@@ -150,6 +151,37 @@ namespace Prototype01
                 }
             }
             return result;
+        }
+
+        private void DebugTile()
+        {
+            
+            var elevatedTileMap = _tileMapPropses[1].Tilemap;
+            /*
+               BoundsInt bounds = elevatedTileMap.cellBounds;
+               TileBase[] allTiles = elevatedTileMap.GetTilesBlock(bounds);
+   
+               for (int x = 0; x < bounds.size.x; x++) {
+                   for (int y = 0; y < bounds.size.y; y++) {
+                       TileBase tile = allTiles[x + y * bounds.size.x];
+                       if (tile != null) {
+                           Debug.Log("x:" + x + " y:" + y + " tile:" + tile.name);
+                       } else {
+                           Debug.Log("x:" + x + " y:" + y + " tile: (null)");
+                       }
+                   }
+               }  */
+            
+            foreach (var pos in elevatedTileMap.cellBounds.allPositionsWithin)
+            {   
+                var localPlace = new Vector3Int(pos.x, pos.y, pos.z);
+                var place = elevatedTileMap.CellToWorld(localPlace);
+                if (elevatedTileMap.HasTile(localPlace))
+                {
+                    var tile = elevatedTileMap.GetTile(localPlace);
+                    Debug.Log(tile.GetType().Name + localPlace);
+                }
+            }
         }
         
         public Vector3Int? WorldPosToCell(Vector3 worldPos)
