@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -29,7 +28,6 @@ namespace Prototype01
         {
             _mouseInput = new MouseInput();
             _camera = Camera.main;
-            DebugTile();
         }
         
         private void OnEnable()
@@ -80,7 +78,6 @@ namespace Prototype01
                         var worldPos = tileMap.CellToWorld(relativePos);
                         Gizmos.color = obstacle ? Color.red : Color.green;
                         Gizmos.DrawCube(worldPos + offset, Vector3.one * 0.1f);
-                        // Handles.Label(worldPos, relativePos.ToString());
                     }
                 }
             }
@@ -137,51 +134,15 @@ namespace Prototype01
                     var tileMap = _tileMapPropses[i].Tilemap;
                     if (tileMap.HasTile(relativePos) && !relativePos.Equals(cell))
                     {
-                        var tile = tileMap.GetTile(cell);
+                        var tile = tileMap.GetTile(relativePos);
                         if (tile != null && tile.GetType() != typeof(Obsctale))
                         {
                             result.Add(relativePos);
-                        }
-                        else
-                        {
-                            // TODO: why elevated returns null?
-                            Debug.Log("Tile was null/obstacle at " + relativePos);
                         }
                     }
                 }
             }
             return result;
-        }
-
-        private void DebugTile()
-        {
-            
-            var elevatedTileMap = _tileMapPropses[1].Tilemap;
-            /*
-               BoundsInt bounds = elevatedTileMap.cellBounds;
-               TileBase[] allTiles = elevatedTileMap.GetTilesBlock(bounds);
-   
-               for (int x = 0; x < bounds.size.x; x++) {
-                   for (int y = 0; y < bounds.size.y; y++) {
-                       TileBase tile = allTiles[x + y * bounds.size.x];
-                       if (tile != null) {
-                           Debug.Log("x:" + x + " y:" + y + " tile:" + tile.name);
-                       } else {
-                           Debug.Log("x:" + x + " y:" + y + " tile: (null)");
-                       }
-                   }
-               }  */
-            
-            foreach (var pos in elevatedTileMap.cellBounds.allPositionsWithin)
-            {   
-                var localPlace = new Vector3Int(pos.x, pos.y, pos.z);
-                var place = elevatedTileMap.CellToWorld(localPlace);
-                if (elevatedTileMap.HasTile(localPlace))
-                {
-                    var tile = elevatedTileMap.GetTile(localPlace);
-                    Debug.Log(tile.GetType().Name + localPlace);
-                }
-            }
         }
         
         public Vector3Int? WorldPosToCell(Vector3 worldPos)

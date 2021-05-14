@@ -12,14 +12,12 @@ namespace Prototype01
 
         private MouseInput _mouseInput;
         private Vector3? _destination;
-
-        private List<Vector3Int> _testCells;
-
+        
+        private readonly List<Node> _path = new List<Node>();
+        
         private void Awake()
         {
             _mouseInput = new MouseInput();
-
-            _testCells =  _tileMapper.GetNeighbourCells(new Vector3Int(12, 3, 0));
         }
         
         private void Start()
@@ -49,27 +47,14 @@ namespace Prototype01
                 Gizmos.DrawLine(transform.position, _destination.Value);
             }
 
-            foreach (var node in _testCells)
+            foreach (var node in _path)
             {
-                var worldPos = _tileMapper.CellToWorldPos(node).Value;
+                var worldPos = _tileMapper.CellToWorldPos(node.Cell).Value;
                 Handles.Label(worldPos, node.ToString());
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawCube(worldPos,Vector3.one * 0.15f);
             }
-            
-            return;
-            foreach (var node in _path)
-            {
-                Handles.Label(node.WorldPos, node.Cell.ToString());
-                Gizmos.color = Color.magenta;
-                Gizmos.DrawCube(node.WorldPos,Vector3.one * 0.15f);
-            }
-            
-            foreach (var node in _openNodes)
-            {
-                Gizmos.color = Color.black;
-                Gizmos.DrawCube(node.WorldPos,Vector3.one * 0.15f);
-            }
+
         }
         
         private void FixedUpdate()
@@ -91,16 +76,9 @@ namespace Prototype01
             }
 #endif
         }
-
-        private List<Node> _closedNodes = new List<Node>();
-        private List<Node> _openNodes = new List<Node>();
-        private List<Node> _path = new List<Node>();
-
-        private int counter = 0;
-
+        
         public void FindPath(Vector3 start, Vector3 end)
         {
-            counter = 0;
             var openNodes = new List<Node>();
             var closedNodes = new HashSet<Node>();
 
@@ -138,12 +116,6 @@ namespace Prototype01
                     RetracePath(startNode, currNode);
                     return;
                 }
-
-                counter++;
-                if (counter > 10000)
-                {
-                    return;
-                }
                 
                 var neighbourCells = _tileMapper.GetNeighbourCells(currNode.Cell);
                 foreach (var neighbourCell in neighbourCells)
@@ -169,12 +141,6 @@ namespace Prototype01
                         }
                     }
                 }
-
-                _openNodes.Clear();
-                _openNodes.AddRange(openNodes);
-                
-                _closedNodes.Clear();
-                _closedNodes.AddRange(closedNodes);
             }
         }
 
