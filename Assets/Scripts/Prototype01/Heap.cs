@@ -65,7 +65,6 @@ namespace Prototype01
             return default;
         }
         
-
         public bool Contains(T item)
         {
             return Equals(item, _elements[item.HeapIndex]);

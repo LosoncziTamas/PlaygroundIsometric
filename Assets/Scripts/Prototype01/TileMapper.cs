@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -23,6 +24,17 @@ namespace Prototype01
         public Vector3Int? MouseHoveredCell {get; private set; }
         
         public Vector3? MouseHoveredTileWorldPos { get; private set; }
+
+        private int? _totalCellCount;
+        
+        public int TotalCellCount
+        {
+            get
+            {
+                _totalCellCount ??= CalculateTotalCellCount();
+                return _totalCellCount.Value;
+            }
+        }
 
         private void Awake()
         {
@@ -120,6 +132,19 @@ namespace Prototype01
             return default;
         }
 
+        private int CalculateTotalCellCount()
+        {
+            var result = 0;
+            
+            for (var i = 0; i < _tileMapPropses.Length; i++)
+            {
+                var tileMap = _tileMapPropses[i].Tilemap;
+                result += tileMap.GetTilesBlock(tileMap.cellBounds).Select(t => t != null).Count();
+            }
+
+            return result;
+        }
+
         public List<Vector3Int> GetNeighbourCells(Vector3Int cell)
         {
             var result = new List<Vector3Int>();
@@ -173,6 +198,5 @@ namespace Prototype01
 
             return null;
         }
-
     }
 }

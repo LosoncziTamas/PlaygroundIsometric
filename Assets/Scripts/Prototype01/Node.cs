@@ -2,10 +2,10 @@ using UnityEngine;
 
 namespace Prototype01
 {
-    public class Node
+    public class Node : IHeapItem<Node>
     {
         private const float UnitDistance = 10.0f;
-        private static readonly float UnitDistanceDiagonal = UnitDistance * Mathf.Sqrt(2);
+        private static readonly float UnitDistanceDiagonal =  UnitDistance * Mathf.Sqrt(2);
 
         public float FCost => GCost + HCost;
         
@@ -50,6 +50,18 @@ namespace Prototype01
             return $"Cell: {Cell} FCost {FCost} HCost {HCost}";
         }
 
+        public int CompareTo(Node other)
+        {
+            var result = FCost.CompareTo(other.FCost);
+            if (result == 0)
+            {
+                result = HCost.CompareTo(other.HCost);
+            }
+            
+            // Negate result because the lower the cost the more optimal the way is.
+            return -result;
+        }
+
         public override bool Equals(object other)
         {
             if (other == null || other.GetType() != typeof(Node))
@@ -68,5 +80,7 @@ namespace Prototype01
         {
             return Cell.Equals(otherCell);
         }
+
+        public int HeapIndex { get; set; }
     }
 }

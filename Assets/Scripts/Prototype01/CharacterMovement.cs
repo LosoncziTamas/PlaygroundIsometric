@@ -54,32 +54,11 @@ namespace Prototype01
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawCube(worldPos,Vector3.one * 0.15f);
             }
+        }
 
-        }
-        
-        private void FixedUpdate()
-        {
-#if false
-            if (_destination.HasValue)
-            {
-                var targetPos = _destination.Value;
-                var currentPos = transform.position;
-                if (Vector3.Distance(targetPos, currentPos) > 0.01f)
-                {
-                    var nextPos = Vector3.MoveTowards(currentPos, targetPos, Time.deltaTime * _speed);
-                    var walkableTile = _tileMapper.WorldPosToTile(nextPos)?.GetType() != typeof(Obsctale);
-                    if (walkableTile)
-                    {
-                        transform.position = nextPos;
-                    }
-                }
-            }
-#endif
-        }
-        
         public void FindPath(Vector3 start, Vector3 end)
         {
-            var openNodes = new List<Node>();
+            var openNodes = new Heap<Node>(_tileMapper.TotalCellCount);
             var closedNodes = new HashSet<Node>();
 
             var startCell = _tileMapper.WorldPosToCell(start);
@@ -91,24 +70,11 @@ namespace Prototype01
             }
             
             var startNode = new Node(startCell.Value, start, startCell.Value, endCell.Value);
-            openNodes.Add(startNode);
+            openNodes.AddItem(startNode);
 
             while (openNodes.Count > 0)
             {
-                var currNode = openNodes[0];
-                for (var nodeIndex = 1; nodeIndex < openNodes.Count; ++nodeIndex)
-                {
-                    var otherNode = openNodes[nodeIndex];
-                    var betterNode = otherNode.FCost < currNode.FCost ||
-                                     Mathf.Approximately(otherNode.FCost, currNode.FCost) &&
-                                     otherNode.HCost < currNode.HCost;
-                    if (betterNode)
-                    {
-                        currNode = otherNode;
-                    }
-                }
-
-                openNodes.Remove(currNode);
+                var currNode = openNodes.RemoveFirst();
                 closedNodes.Add(currNode);
                 
                 if (currNode.OnSameCell(endCell.Value))
@@ -127,17 +93,23 @@ namespace Prototype01
                     }
 
                     var movementCostToNeighbour = currNode.GCost + Node.CellDistance(currNode.Cell, neighbourNode.Cell);
-                    // TODO: when is this true?
-                    if (movementCostToNeighbour < neighbourNode.GCost || !openNodes.Contains(neighbourNode))
+                    var foundMoreOptimalPath = movementCostToNeighbour < neighbourNode.GCost;
+                    if (foundMoreOptimalPath)
+                    {
+                        Debug.Log("Found a more optimal way.");
+                    }
+                    if (foundMoreOptimalPath || !openNodes.Contains(neighbourNode))
                     {
                         neighbourNode.GCost = movementCostToNeighbour;
-                        // TODO: already calculated
-                        neighbourNode.HCost = Node.CellDistance(neighbourNode.Cell, endCell.Value);
                         neighbourNode.Parent = currNode;
 
                         if (!openNodes.Contains(neighbourNode))
                         {
-                            openNodes.Add(neighbourNode);
+                            openNodes.AddItem(neighbourNode);
+                        }
+                        else
+                        {
+                            openNodes.UpdateItem(neighbourNode);
                         }
                     }
                 }
