@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,6 +15,7 @@ namespace Prototype01
 
         private MouseInput _mouseInput;
         private Vector3? _destination;
+        private bool _moving;
         
         private readonly List<Node> _path = new List<Node>();
         
@@ -32,11 +36,53 @@ namespace Prototype01
         
         private void OnMouseClick(InputAction.CallbackContext obj)
         {
+            // TODO: include last tile pos
+            if (_moving)
+            {
+                return;
+            }
             var tilePos = _tileMapper.MouseHoveredTileWorldPos;
             if (tilePos.HasValue)
             {
                 _destination = tilePos.Value;
-                FindPath(transform.position, tilePos.Value);
+                var path = FindPath(transform.position, tilePos.Value);
+                if (!_moving)
+                {
+                    StartCoroutine(MoveAlongPathE(path));
+                }
+                else
+                {
+                    // TODO: interrupt movement
+                }
+                _path.Clear();
+                _path.AddRange(path);
+            }
+        }
+        
+        private IEnumerator MoveAlongPathE(IList<Node> path)
+        {
+            var lastNode = path.LastOrDefault();
+            if (lastNode != null)
+            {
+                var lastCellWorldPos = _tileMapper.CellToWorldPos(lastNode.Cell).GetValueOrDefault();
+                _moving = true;
+                while (Vector3.Distance(lastCellWorldPos, transform.position) > 0.1)
+                {
+                    var next = path.FirstOrDefault();
+                    if (next != null)
+                    {
+                        path.RemoveAt(0);
+                        var worldPos = _tileMapper.CellToWorldPos(next.Cell).GetValueOrDefault();
+                        while (Vector3.Distance(worldPos, transform.position) > 0.1)
+                        {
+                            var nextPos = Vector3.MoveTowards(transform.position, worldPos, Time.fixedDeltaTime * _speed);
+                            Debug.Log($"[CharacterMovement] MoveToPosition target {worldPos} currPos {transform.position} nextPos {nextPos}");
+                            transform.position = nextPos;
+                            yield return new WaitForFixedUpdate();
+                        }
+                    }
+                }
+                _moving = false;
             }
         }
 
@@ -56,7 +102,7 @@ namespace Prototype01
             }
         }
 
-        public void FindPath(Vector3 start, Vector3 end)
+        public IList<Node> FindPath(Vector3 start, Vector3 end)
         {
             var openNodes = new Heap<Node>(_tileMapper.TotalCellCount);
             var closedNodes = new HashSet<Node>();
@@ -66,7 +112,7 @@ namespace Prototype01
 
             if (!startCell.HasValue || !endCell.HasValue)
             {
-                return;
+                return Array.Empty<Node>();
             }
             
             var startNode = new Node(startCell.Value, start, startCell.Value, endCell.Value);
@@ -79,8 +125,7 @@ namespace Prototype01
                 
                 if (currNode.OnSameCell(endCell.Value))
                 {
-                    RetracePath(startNode, currNode);
-                    return;
+                    return RetracePath(startNode, currNode);
                 }
                 
                 var neighbourCells = _tileMapper.GetNeighbourCells(currNode.Cell);
@@ -114,9 +159,11 @@ namespace Prototype01
                     }
                 }
             }
+
+            return Array.Empty<Node>();
         }
 
-        private void RetracePath(Node start, Node end)
+        private List<Node> RetracePath(Node start, Node end)
         {
             var path = new List<Node>();
             var curr = end;
@@ -125,11 +172,8 @@ namespace Prototype01
                 curr = curr.Parent;
                 path.Add(curr);
             }
-            
             path.Reverse();
-            
-            _path.Clear();
-            _path.AddRange(path);
+            return path;
         }
 
         private void OnDisable()
