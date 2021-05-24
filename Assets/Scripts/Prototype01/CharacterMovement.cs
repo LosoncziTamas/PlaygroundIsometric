@@ -10,12 +10,13 @@ namespace Prototype01
 {
     public class CharacterMovement : MonoBehaviour
     {
+        // TODO: bypass obstacle edges
+
         [SerializeField] private float _speed = 2.0f;
         [SerializeField] private TileMapper _tileMapper;
 
         private MouseInput _mouseInput;
         private Vector3? _destination;
-        private bool _moving;
         
         private readonly List<Node> _path = new List<Node>();
         
@@ -36,36 +37,24 @@ namespace Prototype01
         
         private void OnMouseClick(InputAction.CallbackContext obj)
         {
-            // TODO: include last tile pos
-            if (_moving)
-            {
-                return;
-            }
             var tilePos = _tileMapper.MouseHoveredTileWorldPos;
             if (tilePos.HasValue)
             {
                 _destination = tilePos.Value;
                 var path = FindPath(transform.position, tilePos.Value);
-                if (!_moving)
-                {
-                    StartCoroutine(MoveAlongPathE(path));
-                }
-                else
-                {
-                    // TODO: interrupt movement
-                }
+                StopAllCoroutines();
+                StartCoroutine(MoveAlongPath(path));
                 _path.Clear();
                 _path.AddRange(path);
             }
         }
         
-        private IEnumerator MoveAlongPathE(IList<Node> path)
+        private IEnumerator MoveAlongPath(IList<Node> path)
         {
             var lastNode = path.LastOrDefault();
             if (lastNode != null)
             {
                 var lastCellWorldPos = _tileMapper.CellToWorldPos(lastNode.Cell).GetValueOrDefault();
-                _moving = true;
                 while (Vector3.Distance(lastCellWorldPos, transform.position) > 0.1)
                 {
                     var next = path.FirstOrDefault();
@@ -82,7 +71,6 @@ namespace Prototype01
                         }
                     }
                 }
-                _moving = false;
             }
         }
 
@@ -167,6 +155,7 @@ namespace Prototype01
         {
             var path = new List<Node>();
             var curr = end;
+            path.Add(curr);
             while (!Equals(curr.Parent, start))
             {
                 curr = curr.Parent;
