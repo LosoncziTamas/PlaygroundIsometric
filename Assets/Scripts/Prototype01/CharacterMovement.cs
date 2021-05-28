@@ -11,6 +11,7 @@ namespace Prototype01
     public class CharacterMovement : MonoBehaviour
     {
         // TODO: bypass obstacle edges
+        // TODO: fix movement between levels
 
         [SerializeField] private float _speed = 2.0f;
         [SerializeField] private TileMapper _tileMapper;
@@ -90,7 +91,7 @@ namespace Prototype01
             }
         }
 
-        public IList<Node> FindPath(Vector3 start, Vector3 end)
+        private IList<Node> FindPath(Vector3 start, Vector3 end)
         {
             var openNodes = new Heap<Node>(_tileMapper.TotalCellCount);
             var closedNodes = new HashSet<Node>();
@@ -151,12 +152,12 @@ namespace Prototype01
             return Array.Empty<Node>();
         }
 
-        private List<Node> RetracePath(Node start, Node end)
+        private static List<Node> RetracePath(Node start, Node end)
         {
             var path = new List<Node>();
             var curr = end;
             path.Add(curr);
-            while (!Equals(curr.Parent, start))
+            while (curr != null && !Equals(curr.Parent, start))
             {
                 curr = curr.Parent;
                 path.Add(curr);
