@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Prototype01
@@ -8,25 +8,13 @@ namespace Prototype01
     public class PathFinder : MonoBehaviour
     {
         [SerializeField] private TileMapper _tileMapper;
-
-        private void Awake()
-        {
-            StartCoroutine(FindPath(new FindPathRequest()));
-        }
-
-        public struct FindPathRequest
-        {
-            public Vector3 Start;
-            public Vector3 End;
-            public Action<bool, Vector3[]> Callback;
-        }
-
-        public IEnumerator FindPath(FindPathRequest request)
-        {
-            Debug.Log("[PathFinder] FindPath");
-            yield return null;
-        }
         
+        public Task<IList<Node>> FindPathAsync(Vector3 start, Vector3 end)
+        {
+            var result = Task.Run(() => FindPath(start, end));
+            return result;
+        }
+
         public IList<Node> FindPath(Vector3 start, Vector3 end)
         {
             var openNodes = new Heap<Node>(_tileMapper.TotalCellCount);
