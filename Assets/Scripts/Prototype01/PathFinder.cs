@@ -81,7 +81,7 @@ namespace Prototype01
             var path = new List<Node>();
             var curr = end;
             path.Add(curr);
-            while (curr != null && !Equals(curr.Parent, start))
+            while (curr.Parent != null && !Equals(curr.Parent, start))
             {
                 curr = curr.Parent;
                 path.Add(curr);
