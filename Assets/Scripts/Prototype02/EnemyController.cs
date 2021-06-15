@@ -8,7 +8,7 @@ namespace Prototype02
 {
     public class EnemyController : MonoBehaviour
     {
-        private const float DistanceThreshold = 0.1f;
+        private const float DistanceThreshold = 0.01f;
 
         public float speed = 2.0f;
         
@@ -34,16 +34,28 @@ namespace Prototype02
             {
                 StartCoroutine(MoveToCell(firstStep.Cell));
             }
+            else
+            {
+                Debug.Log("Break");
+            }
         }
 
         private IEnumerator MoveToCell(Vector3Int cell)
         {
-            var target = _tileMapper.CellToWorldPos(cell).GetValueOrDefault();
-            while (Vector3.Distance(target, transform.position) > DistanceThreshold)
+            var target = _tileMapper.CellToWorldPos(cell);
+            if (target == null)
             {
-                transform.position = Vector3.MoveTowards(transform.position, target, Time.fixedDeltaTime * speed);
-                yield return new WaitForFixedUpdate();
+                yield break;
             }
+
+            var distance = Vector3.Distance(target.Value, transform.position);
+            while (distance > DistanceThreshold)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, target.Value, Time.fixedDeltaTime * speed);
+                yield return new WaitForFixedUpdate();
+                distance = Vector3.Distance(target.Value, transform.position);
+            }
+
         }
     }
 }

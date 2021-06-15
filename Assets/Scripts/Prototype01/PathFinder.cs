@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 namespace Prototype01
@@ -8,6 +9,19 @@ namespace Prototype01
     public class PathFinder : MonoBehaviour
     {
         [SerializeField] private TileMapper _tileMapper;
+
+        private List<Node> _lastPath = new List<Node>();
+        
+        private void OnDrawGizmos()
+        {
+            foreach (var node in _lastPath)
+            {
+                var worldPos = _tileMapper.CellToWorldPos(node.Cell).GetValueOrDefault();
+                Handles.Label(worldPos, node.ToString());
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawCube(worldPos,Vector3.one * 0.15f);
+            }
+        }
         
         public Task<IList<Node>> FindPathAsync(Vector3 start, Vector3 end)
         {
@@ -38,7 +52,9 @@ namespace Prototype01
                 
                 if (currNode.OnSameCell(endCell.Value))
                 {
-                    return RetracePath(startNode, currNode);
+                    var result =  RetracePath(startNode, currNode);
+                    _lastPath.Clear();
+                    _lastPath.AddRange(result);
                 }
                 
                 var neighbourCells = _tileMapper.GetNeighbourCells(currNode.Cell);
