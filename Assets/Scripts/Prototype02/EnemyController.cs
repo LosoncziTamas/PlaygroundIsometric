@@ -29,14 +29,9 @@ namespace Prototype02
         {
             var fullPath = _pathFinder.FindPath(transform.position, _player.position);
             var firstStep = fullPath.FirstOrDefault();
-            // TODO: why can be null?
             if (firstStep != null)
             {
                 StartCoroutine(MoveToCell(firstStep.Cell));
-            }
-            else
-            {
-                Debug.Log("Break");
             }
         }
 

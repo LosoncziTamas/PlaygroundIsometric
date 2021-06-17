@@ -55,6 +55,7 @@ namespace Prototype01
                     var result =  RetracePath(startNode, currNode);
                     _lastPath.Clear();
                     _lastPath.AddRange(result);
+                    return _lastPath;
                 }
                 
                 var neighbourCells = _tileMapper.GetNeighbourCells(currNode.Cell);
