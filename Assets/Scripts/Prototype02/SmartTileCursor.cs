@@ -10,7 +10,6 @@ namespace Prototype02
         private const int MaxSurroundingTileCount = 8;
         
         [SerializeField] private TileMapper _tileMapper;
-        [SerializeField] private Transform _player;
         [SerializeField] private TileHighlight _tileHighlightPrefab;
         [SerializeField] private Transform _mainHighlight;
 
@@ -35,14 +34,6 @@ namespace Prototype02
             }
             _cachedWalkables.AddRange(_displayedWalkables);
             _displayedWalkables.Clear();
-        }
-
-        private void OnGUI()
-        {
-            if (GUILayout.Button("Show walkables"))
-            {
-                HighlightWalkableTiles(_player.transform.position);
-            }
         }
 
         public void HighlightWalkableTiles(Vector3 position)
@@ -74,7 +65,6 @@ namespace Prototype02
                     tileHighlight.Init(Color.green);
                 }
             }
-
         }
         
         private void Update()
@@ -83,6 +73,17 @@ namespace Prototype02
             if (tilePos.HasValue)
             {
                 _mainHighlight.position = tilePos.Value;
+                // TODO: replace legacy input
+                if (Input.GetMouseButtonUp(0))
+                {
+                    foreach (var displayedWalkable in _displayedWalkables)
+                    {
+                        if (tilePos.Equals(displayedWalkable.transform.position))
+                        {
+                            Debug.Log("Walkable");
+                        }
+                    }
+                }
             }
         }
     }
