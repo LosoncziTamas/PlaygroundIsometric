@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Prototype01;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Prototype02
 {
@@ -15,7 +16,9 @@ namespace Prototype02
 
         private readonly List<TileHighlight> _cachedWalkables = new List<TileHighlight>(MaxSurroundingTileCount);
         private readonly List<TileHighlight> _displayedWalkables = new List<TileHighlight>(MaxSurroundingTileCount);
-
+        
+        private MouseInput _mouseInput;
+        
         private void Awake()
         {
             for (var i = 0; i < MaxSurroundingTileCount; i++)
@@ -23,6 +26,44 @@ namespace Prototype02
                 var highlight = Instantiate(_tileHighlightPrefab, transform);
                 highlight.gameObject.SetActive(false);
                 _cachedWalkables.Add(highlight);
+            }
+            _mouseInput = new MouseInput();
+
+        }
+
+        private void Start()
+        {
+            _mouseInput.Mouse.MouseClick.performed += OnMouseClick;
+        }
+        
+        private void OnEnable()
+        {
+            _mouseInput.Enable();
+        }
+        
+        
+        private void OnDisable()
+        {
+            _mouseInput.Disable();
+        }
+
+        private void OnDestroy()
+        {
+            _mouseInput.Mouse.MouseClick.performed -= OnMouseClick;
+        }
+        
+        private void OnMouseClick(InputAction.CallbackContext obj)
+        {
+            var tilePos = _tileMapper.MouseHoveredTileWorldPos;
+            if (tilePos.HasValue)
+            {
+                foreach (var displayedWalkable in _displayedWalkables)
+                {
+                    if (tilePos.Equals(displayedWalkable.transform.position))
+                    {
+                        Debug.Log("Walkable");
+                    }
+                }
             }
         }
 
@@ -66,24 +107,13 @@ namespace Prototype02
                 }
             }
         }
-        
+
         private void Update()
         {
             var tilePos = _tileMapper.MouseHoveredTileWorldPos;
             if (tilePos.HasValue)
             {
                 _mainHighlight.position = tilePos.Value;
-                // TODO: replace legacy input
-                if (Input.GetMouseButtonUp(0))
-                {
-                    foreach (var displayedWalkable in _displayedWalkables)
-                    {
-                        if (tilePos.Equals(displayedWalkable.transform.position))
-                        {
-                            Debug.Log("Walkable");
-                        }
-                    }
-                }
             }
         }
     }

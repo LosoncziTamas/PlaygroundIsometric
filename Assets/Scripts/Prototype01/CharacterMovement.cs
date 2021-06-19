@@ -37,6 +37,17 @@ namespace Prototype01
             _mouseInput.Enable();
         }
         
+        
+        private void OnDisable()
+        {
+            _mouseInput.Disable();
+        }
+
+        private void OnDestroy()
+        {
+            _mouseInput.Mouse.MouseClick.performed -= OnMouseClick;
+        }
+        
         private void OnMouseClick(InputAction.CallbackContext obj)
         {
             var tilePos = _tileMapper.MouseHoveredTileWorldPos;
@@ -92,14 +103,5 @@ namespace Prototype01
             }
         }
 
-        private void OnDisable()
-        {
-            _mouseInput.Disable();
-        }
-
-        private void OnDestroy()
-        {
-            _mouseInput.Mouse.MouseClick.performed -= OnMouseClick;
-        }
     }
 }
