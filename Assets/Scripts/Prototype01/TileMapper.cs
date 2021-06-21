@@ -26,7 +26,36 @@ namespace Prototype01
         public Vector3? MouseHoveredTileWorldPos { get; private set; }
 
         private int? _totalCellCount;
-        
+
+        private static TileMapper _tileMapper;
+        public static TileMapper Instance
+        {
+            get
+            {
+                if (_tileMapper == null)
+                {
+                    _tileMapper = FindObjectOfType<TileMapper>();
+                    if (_tileMapper == null)
+                    {
+                        // TODO: create from prefab
+                    }
+                }
+
+                return _tileMapper;
+            }
+            set
+            {
+                if (_tileMapper == null)
+                {
+                    _tileMapper = value;
+                }
+                else
+                {
+                    Debug.LogWarning("TileMapper already exists");
+                }
+            }
+        }
+
         public int TotalCellCount
         {
             get
@@ -38,10 +67,16 @@ namespace Prototype01
 
         private void Awake()
         {
+            Instance = this;
             _mouseInput = new MouseInput();
             _camera = Camera.main;
         }
-        
+
+        private void OnDestroy()
+        {
+            _tileMapper = null;
+        }
+
         private void OnEnable()
         {
             _mouseInput.Enable();

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Linq;
 using Prototype01;
 using UnityEngine;
@@ -11,19 +10,11 @@ namespace Prototype02
         private const float DistanceThreshold = 0.01f;
 
         public float speed = 2.0f;
+        public event Action enemyMoved;
         
         [SerializeField] private Transform _player;
         [SerializeField] private PathFinder _pathFinder;
         [SerializeField] private TileMapper _tileMapper;
-
-        private void OnGUI()
-        {
-            GUILayout.Space(100);
-            if (GUILayout.Button("Move enemy"))
-            {
-                MoveAStep();
-            }
-        }
 
         public void MoveAStep()
         {
@@ -31,26 +22,12 @@ namespace Prototype02
             var firstStep = fullPath.FirstOrDefault();
             if (firstStep != null)
             {
-                StartCoroutine(MoveToCell(firstStep.Cell));
+                var target = _tileMapper.CellToWorldPos(firstStep.Cell);
+                if (target != null)
+                {
+                    this.StartMoveToPosition(target.Value, speed, enemyMoved);
+                }
             }
-        }
-
-        private IEnumerator MoveToCell(Vector3Int cell)
-        {
-            var target = _tileMapper.CellToWorldPos(cell);
-            if (target == null)
-            {
-                yield break;
-            }
-
-            var distance = Vector3.Distance(target.Value, transform.position);
-            while (distance > DistanceThreshold)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, target.Value, Time.fixedDeltaTime * speed);
-                yield return new WaitForFixedUpdate();
-                distance = Vector3.Distance(target.Value, transform.position);
-            }
-
         }
     }
 }

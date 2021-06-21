@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 245673047}
   - component: {fileID: 245673046}
   - component: {fileID: 245673045}
+  - component: {fileID: 245673048}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -206,6 +207,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &245673048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 245673044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35c8171d8e0743eaad6d947792d122bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _player: {fileID: 7114272671967915178}
+  _enemy: {fileID: 859790098}
 --- !u!1 &859790096
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,8 +440,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfbc3b75dda746839dc27c0911649b80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tileMapper: {fileID: 5216836554761548087}
-  _tileHighlightPrefab: {fileID: 1260606415093989311, guid: 0187d0bed01e649a197b1802856fd450, type: 3}
   _mainHighlight: {fileID: 2344151733596625891}
 --- !u!4 &2344151733418631017
 Transform:
@@ -501,7 +514,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_Sprite: {fileID: 3625043607559282579, guid: 0d267bc78a0864eb48358689b29ed20a, type: 3}
-  m_Color: {r: 1, g: 1, b: 0.43137255, a: 0.4745098}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.2509804}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -3854,7 +3867,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717a98bc5d564bf7b0b6ac08108d7c9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _smartTileCursor: {fileID: 2344151733418631016}
+  WalkableColor: {r: 0.009649992, g: 1, b: 0, a: 0}
+  _tileHighlightPrefab: {fileID: 1260606415093989311, guid: 0187d0bed01e649a197b1802856fd450, type: 3}
 --- !u!4 &7114272671967915179
 Transform:
   m_ObjectHideFlags: 0
