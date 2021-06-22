@@ -7,8 +7,6 @@ namespace Prototype02
 {
     public class EnemyController : MonoBehaviour
     {
-        private const float DistanceThreshold = 0.01f;
-
         public float speed = 2.0f;
         public event Action enemyMoved;
         
@@ -16,6 +14,11 @@ namespace Prototype02
         [SerializeField] private PathFinder _pathFinder;
         [SerializeField] private TileMapper _tileMapper;
 
+        public void ResetInternals(Vector3 startPos)
+        {
+            transform.position = startPos;
+        }
+        
         public void MoveAStep()
         {
             var fullPath = _pathFinder.FindPath(transform.position, _player.position);

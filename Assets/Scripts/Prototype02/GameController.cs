@@ -1,4 +1,4 @@
-using System;
+using Prototype01;
 using UnityEngine;
 
 namespace Prototype02
@@ -10,6 +10,8 @@ namespace Prototype02
 
         private bool _running;
         private bool _playersTurn;
+        
+        //TODO: add obstacle
 
         private void Start()
         {
@@ -31,12 +33,30 @@ namespace Prototype02
         {
             _playersTurn = false;
             _enemy.MoveAStep();
+            CheckGameState();
         }
 
         private void OnEnemyMoved()
         {
             _playersTurn = true;
             _player.BeginTurn();
+            CheckGameState();
+        }
+
+        private void CheckGameState()
+        {
+            var playerPos = _player.transform.position;
+            var enemyPos = _enemy.transform.position;
+            var playerCell = TileMapper.Instance.WorldPosToCell(playerPos);
+            var enemyCell = TileMapper.Instance.WorldPosToCell(enemyPos);
+            
+            if (playerCell.Equals(enemyCell))
+            {
+                Debug.Log("Game over");
+                _running = false;
+                _player.ResetInternals(new Vector3(-2, -1.346154f, 0));
+                _enemy.ResetInternals(new Vector3(2, 1.730769f, 0));
+            }
         }
     }
 }

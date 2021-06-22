@@ -20,7 +20,6 @@ namespace Prototype02
         private readonly List<TileHighlight> _displayedWalkables = new List<TileHighlight>(MaxSurroundingTileCount);
         
         private MouseInput _mouseInput;
-
         
         private void Awake()
         {
@@ -51,6 +50,12 @@ namespace Prototype02
         private void OnDestroy()
         {
             _mouseInput.Mouse.MouseClick.performed -= OnMouseClick;
+        }
+        
+        public void ResetInternals(Vector3 startPos)
+        {
+            transform.position = startPos;
+            HideWalkableTiles();
         }
         
         private void OnMouseClick(InputAction.CallbackContext obj)
@@ -106,7 +111,7 @@ namespace Prototype02
 
                     tileHighlight.transform.position = pos.Value;
                     tileHighlight.gameObject.SetActive(true);
-                    tileHighlight.Init(Color.green);
+                    tileHighlight.Init(WalkableColor);
                 }
             }
         }
