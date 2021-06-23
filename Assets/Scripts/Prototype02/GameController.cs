@@ -45,10 +45,11 @@ namespace Prototype02
 
         private void CheckGameState()
         {
+            var tileMapper = TileMapper.Instance;
             var playerPos = _player.transform.position;
             var enemyPos = _enemy.transform.position;
-            var playerCell = TileMapper.Instance.WorldPosToCell(playerPos);
-            var enemyCell = TileMapper.Instance.WorldPosToCell(enemyPos);
+            var playerCell = tileMapper.WorldPosToCell(playerPos);
+            var enemyCell = tileMapper.WorldPosToCell(enemyPos);
             
             if (playerCell.Equals(enemyCell))
             {
@@ -56,6 +57,12 @@ namespace Prototype02
                 _running = false;
                 _player.ResetInternals(new Vector3(-2, -1.346154f, 0));
                 _enemy.ResetInternals(new Vector3(2, 1.730769f, 0));
+            }
+
+            var tile = tileMapper.GetTileAt(playerCell.Value);
+            if (tile.GetType() == typeof(GoalTile))
+            {
+                Debug.Log("Game Won");
             }
         }
     }

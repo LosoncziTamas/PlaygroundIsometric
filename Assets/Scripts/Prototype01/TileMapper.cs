@@ -218,6 +218,21 @@ namespace Prototype01
             }
             return null;
         }
+
+        public TileBase GetTileAt(Vector3Int tilePos)
+        {
+            for (var i = 0; i < _tileMapPropses.Length; i++)
+            {
+                var tileMap = _tileMapPropses[i].Tilemap;
+                if (tileMap.HasTile(tilePos))
+                {
+                    var tile = tileMap.GetTile(tilePos);
+                    return tile;
+                }
+            }
+
+            return null;
+        }
         
         public Vector3? CellToWorldPos(Vector3Int cell)
         {
