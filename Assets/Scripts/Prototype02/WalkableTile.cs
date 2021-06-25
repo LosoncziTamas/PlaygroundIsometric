@@ -1,9 +1,10 @@
+using Prototype01;
 using UnityEditor;
 using UnityEngine.Tilemaps;
 
-namespace Prototype01
+namespace Prototype02
 {
-    public class Obsctale : Tile
+    public class WalkableTile : Tile
     {
 #if UNITY_EDITOR
         [MenuItem("Assets/Create/Walkable Tile")]
@@ -16,7 +17,7 @@ namespace Prototype01
                 return;
             }
  
-            AssetDatabase.CreateAsset(CreateInstance<Obsctale>(), path);
+            AssetDatabase.CreateAsset(CreateInstance<WalkableTile>(), path);
         }
 #endif
     }

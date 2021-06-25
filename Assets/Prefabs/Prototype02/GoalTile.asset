@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GoalTile
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: -210866551962877471, guid: 31d1996e6eb964b2ea687d04ebe5eb92, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3921569, g: 0.25882354, b: 0.61960787, a: 1}
   m_Transform:
     e00: 1
     e01: 0

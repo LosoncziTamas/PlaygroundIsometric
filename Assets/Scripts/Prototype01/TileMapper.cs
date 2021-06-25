@@ -121,7 +121,7 @@ namespace Prototype01
                     if (tileMap.HasTile(relativePos))
                     {
                         var tile = tileMap.GetTile(relativePos);
-                        var obstacle = tile.GetType() == typeof(Obsctale);
+                        var obstacle = tile.GetType() == typeof(Obstacle);
                         var worldPos = tileMap.CellToWorld(relativePos);
                         Gizmos.color = obstacle ? Color.red : Color.green;
                         Gizmos.DrawCube(worldPos + offset, Vector3.one * 0.1f);
@@ -195,7 +195,7 @@ namespace Prototype01
                     if (tileMap.HasTile(relativePos) && !relativePos.Equals(cell))
                     {
                         var tile = tileMap.GetTile(relativePos);
-                        if (tile != null && tile.GetType() != typeof(Obsctale))
+                        if (tile != null && tile.GetType() != typeof(Obstacle))
                         {
                             result.Add(relativePos);
                         }

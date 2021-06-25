@@ -1,5 +1,7 @@
+using System.Collections;
 using Prototype01;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Prototype02
 {
@@ -10,13 +12,45 @@ namespace Prototype02
 
         private bool _running;
         private bool _playersTurn;
-        
-        //TODO: add obstacle
 
+        private Tile _startTile;
+
+        enum State
+        {
+            PlayerStart,
+            PlayerTurn,
+            EnemyTurn,
+            GameOver
+        };
+
+        private State _gameState;
+        
         private void Start()
         {
+#if false
+            _startTile = TileMapper.Instance.WorldPosToTile<StartTile>(_player.transform.position);
+            StartCoroutine(PlayerStart());
+#endif
+
             _player.playerMoved += OnPlayerMoved;
             _enemy.enemyMoved += OnEnemyMoved;
+            _gameState = State.PlayerStart;
+        }
+
+        private IEnumerator PlayerStart()
+        {
+            var startColor = _startTile.color;
+            var t = 0.0f;
+            while (!_player.PlayerTileSelected)
+            {
+                if (t > 1.0f)
+                {
+                    t = 0;
+                }
+                _startTile.color = Color.Lerp(startColor, Color.white, t);
+                t += 0.01f;
+                yield return null;
+            }
         }
 
         private void OnGUI()

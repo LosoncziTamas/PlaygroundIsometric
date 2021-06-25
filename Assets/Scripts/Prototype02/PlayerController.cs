@@ -20,6 +20,10 @@ namespace Prototype02
         private readonly List<TileHighlight> _displayedWalkables = new List<TileHighlight>(MaxSurroundingTileCount);
         
         private MouseInput _mouseInput;
+
+        private bool _playerTileSelected;
+
+        public bool PlayerTileSelected => _playerTileSelected;
         
         private void Awake()
         {
@@ -63,6 +67,9 @@ namespace Prototype02
             var tilePos = TileMapper.Instance.MouseHoveredTileWorldPos;
             if (tilePos.HasValue)
             {
+                var mouseCell = TileMapper.Instance.MouseHoveredCell;
+                var playerCell = TileMapper.Instance.WorldPosToCell(transform.position);
+                _playerTileSelected = playerCell.Equals(mouseCell);
                 foreach (var displayedWalkable in _displayedWalkables)
                 {
                     if (tilePos.Equals(displayedWalkable.transform.position))
