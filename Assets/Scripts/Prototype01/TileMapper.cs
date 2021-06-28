@@ -56,6 +56,22 @@ namespace Prototype01
             }
         }
 
+        public GameObject GetGameObject(Vector3 worldPos)
+        {
+            for (var i = 0; i < _tileMapPropses.Length; i++)
+            {
+                var tileMap = _tileMapPropses[i].Tilemap;
+                var cell = tileMap.WorldToCell(worldPos);
+                if (tileMap.HasTile(cell))
+                {
+                    var go = tileMap.GetInstantiatedObject(cell);
+                    return go;
+                }
+            }
+
+            return null;
+        }
+
         public int TotalCellCount
         {
             get

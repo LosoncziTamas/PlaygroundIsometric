@@ -10,5 +10,8 @@ namespace Prototype02
         {
             _spriteRenderer.color = color;
         }
+
+        public SpriteRenderer SpriteRenderer => _spriteRenderer;
+
     }
 }

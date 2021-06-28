@@ -14,6 +14,7 @@ namespace Prototype02
         private bool _playersTurn;
 
         private Tile _startTile;
+        private TileHighlight _startTileHighlight;
 
         enum State
         {
@@ -27,10 +28,7 @@ namespace Prototype02
         
         private void Start()
         {
-#if false
             _startTile = TileMapper.Instance.WorldPosToTile<StartTile>(_player.transform.position);
-            StartCoroutine(PlayerStart());
-#endif
 
             _player.playerMoved += OnPlayerMoved;
             _enemy.enemyMoved += OnEnemyMoved;
@@ -39,7 +37,7 @@ namespace Prototype02
 
         private IEnumerator PlayerStart()
         {
-            var startColor = _startTile.color;
+            var startColor = _startTileHighlight.SpriteRenderer.color;
             var t = 0.0f;
             while (!_player.PlayerTileSelected)
             {
@@ -47,19 +45,19 @@ namespace Prototype02
                 {
                     t = 0;
                 }
-                _startTile.color = Color.Lerp(startColor, Color.white, t);
+                _startTileHighlight.SpriteRenderer.color = Color.Lerp(Color.green, Color.white, t);
                 t += 0.01f;
                 yield return null;
             }
         }
-
+        
         private void OnGUI()
         {
             if (!_running && GUILayout.Button("Start Game"))
             {
-                _running = true;
-                _playersTurn = true;
-                _player.BeginTurn();
+                var go = TileMapper.Instance.GetGameObject(_player.transform.position);
+                _startTileHighlight = go.GetComponent<TileHighlight>();
+                StartCoroutine(PlayerStart());
             }
         }
 
