@@ -14,14 +14,7 @@ namespace Prototype02
         
         private void Start()
         {
-            _enemy.enemyMoved += OnEnemyMoved;
             SetState(new StartState(this));
-        }
-
-
-        private void OnEnemyMoved()
-        {
-            StartCoroutine(State.PlayerTurn());
         }
     }
 }

@@ -10,26 +10,6 @@ namespace Prototype02
         {
             yield break;
         }
-
-        public virtual IEnumerator PlayerTurn()
-        {
-            yield break;
-        }
-        
-        public virtual IEnumerator EnemyTurn()
-        {
-            yield break;
-        }
-        
-        public virtual IEnumerator Won()
-        {
-            yield break;
-        }
-        
-        public virtual IEnumerator Lost()
-        {
-            yield break;
-        }
     }
 
     public abstract class StateMachine : MonoBehaviour
@@ -90,9 +70,15 @@ namespace Prototype02
             _gameController = gameController;
         }
 
-        public override IEnumerator EnemyTurn()
+        public override IEnumerator Init()
         {
+            _enemy.enemyMoved += OnEnemyMoved;
             _enemy.MoveAStep();
+            return base.Init();
+        }
+
+        private void OnEnemyMoved()
+        {
             var tileMapper = TileMapper.Instance;
             var playerPos = _gameController.Player.transform.position;
             var enemyPos = _enemy.transform.position;
@@ -101,14 +87,13 @@ namespace Prototype02
             
             if (playerCell.Equals(enemyCell))
             {
-                //TODO: game over
+                _gameController.SetState(new GameOverState(_gameController));
             }
             else
             {
                 _gameController.SetState(new PlayerTurnState(_gameController));
             }
-            
-            yield break;
+            _enemy.enemyMoved -= OnEnemyMoved;
         }
     }
 
@@ -142,14 +127,14 @@ namespace Prototype02
             
             if (playerCell.Equals(enemyCell))
             {
-                //TODO: game over
+                _gameController.SetState(new GameOverState(_gameController));
             }
             else
             {
                 var tile = tileMapper.GetTileAt(playerCell.Value);
                 if (tile.GetType() == typeof(GoalTile))
                 {
-                    //TODO: won
+                    _gameController.SetState(new GameWonState(_gameController));
                 }
                 else
                 {
@@ -157,6 +142,40 @@ namespace Prototype02
                 }
             }
             _player.playerMoved -= OnPlayerMoved;
+        }
+    }
+    
+    public class GameOverState : State
+    {
+        private GameController _gameController;
+
+        public GameOverState(GameController gameController)
+        {
+            _gameController = gameController;
+        }
+
+        public override IEnumerator Init()
+        {
+            Debug.Log("Game over");
+            yield return new WaitForSeconds(2.0f);
+            _gameController.SetState(new StartState(_gameController));
+        }
+    }
+
+    public class GameWonState : State
+    {
+        private GameController _gameController;
+
+        public GameWonState(GameController gameController)
+        {
+            _gameController = gameController;
+        }
+        
+        public override IEnumerator Init()
+        {
+            Debug.Log("Won");
+            yield return new WaitForSeconds(2.0f);
+            _gameController.SetState(new StartState(_gameController));
         }
     }
 }
