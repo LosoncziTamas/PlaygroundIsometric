@@ -25,6 +25,8 @@ namespace Prototype02
 
     public class StartState : State
     {
+        private static readonly Vector3 StartTileHighlightOffset = Vector3.up * (6.653846f - 6.538462f);
+        
         private TileMapper _tileMapper;
         private PlayerController _player;
         private TileHighlight _startTileHighlight;
@@ -38,23 +40,42 @@ namespace Prototype02
             _player.ResetInternals(new Vector3(-2, -1.346154f, 0));
             gameController.Enemy.ResetInternals(new Vector3(2, 1.730769f, 0));
         }
+
+        private void InitStartTile()
+        {
+            if (!_startTileHighlight)
+            {
+                _startTileHighlight = _tileMapper.GetGameObject(_player.transform.position).GetComponent<TileHighlight>();
+                var offset = StartTileHighlightOffset;
+                _startTileHighlight.transform.position += offset;
+            }
+            _startTileHighlight.gameObject.SetActive(true);
+        }
         
         public override IEnumerator Init()
         {
+            // Wait for start to be executed.
             yield return null;
-            _startTileHighlight = _tileMapper.GetGameObject(_player.transform.position).GetComponent<TileHighlight>();
+            InitStartTile();
+
             var startColor = _startTileHighlight.SpriteRenderer.color;
             var t = 0.0f;
+            var step = 0.01f;
             while (!_player.PlayerTileSelected)
             {
                 if (t > 1.0f)
                 {
-                    t = 0;
+                    step = -0.01f;
                 }
-                _startTileHighlight.SpriteRenderer.color = Color.Lerp(Color.green, Color.white, t);
-                t += 0.01f;
+                else if (t <= 0)
+                {
+                    step = 0.01f;
+                }
+                _startTileHighlight.SpriteRenderer.color = Color.Lerp(startColor, Color.white, t);
+                t += step;
                 yield return null;
             }
+            _startTileHighlight.gameObject.SetActive(false);
             _gameController.SetState(new PlayerTurnState(_gameController));
         }
     }

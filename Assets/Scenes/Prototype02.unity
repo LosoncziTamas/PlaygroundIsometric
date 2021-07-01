@@ -2352,7 +2352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717a98bc5d564bf7b0b6ac08108d7c9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WalkableColor: {r: 0, g: 0.78431374, b: 0, a: 1}
+  WalkableColor: {r: 0, g: 1, b: 0, a: 0.2509804}
   _tileHighlightPrefab: {fileID: 1260606415093989311, guid: 0187d0bed01e649a197b1802856fd450, type: 3}
 --- !u!4 &7114272671967915179
 Transform:
