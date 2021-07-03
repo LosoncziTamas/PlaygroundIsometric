@@ -1,4 +1,5 @@
 using Prototype01;
+using Prototype02.GameStates;
 using UnityEngine;
 
 namespace Prototype02
